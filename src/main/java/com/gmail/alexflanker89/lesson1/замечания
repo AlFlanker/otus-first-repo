@@ -1,0 +1,43 @@
+1. Предлагаю чуть-чуть доформатировать pom.xml.
+2. Так - у Вас нет как такового пакейджа - Вам необходимо создать что-то вроде ru.otus или com.gmail.alexflanker89.
+Есть
+
+3. Паккейдж по правилам нухно называть с маленькой буквы. Т.е. паккейдж Util должен быть com.gmail.alexflanker89.Util
+Есть
+
+4. src/main/java/Solution.java
+ВОт Вы используете lombok, а конструктор можно заменить на `@RequiredArgsConstructor`.
+Есть
+
+
+5. Solution можете тоже как бин разместить в контексте и тогда main будет просто получением бина и вызовом одного метода
+Есть
+
+6. Отформатирйте код)
+Есть
+
+7. src/main/java/Util/Util.java утилитный класс - лдя него должен быть приватный конструктор, а сам он должен быть final. Это же реализуется с помощью `@UtilityClass`.
+Есть
+
+8. src/main/dao/QuestionDaoSimple.java - вотсовсем длинные методы - в принципе - их можно разделить. Попробуйте вынести хотябы чтение одной строчки.
+Да, и не забывайте плюшки функциональной Java 8 исопльзовать, например forEach.
+Есть
+
+9. src/main/java/dao/UserAnswerDaoSimple.java - у Вас часть методов интерфейса реализуются с @Override, часть - без. В принципе всё равно как (но ярекомендую стаивть @Override) - но подход должен быть одним.
+Есть
+
+10. src/main/java/domain/Question.java - вот лучше тогд анаписать `@NoArgsConstructor` или вооще сделать immutable - без сеттеров, а поля все final.
+Непонял
+
+11. src/main/java/service/SimpleUserService.java - я бы на пустоту проверял бы каким-нибудь Stringutils из common-lang3.
+неясно преимущество
+
+12. src/test/java/lesson1.QuestionServiceTest.java - именуйте имена тестов не как test1, а как souldReadQuestions.
+есть
+
+13. `Assert.assertTrue(service.getQuestions().size()==5);` лучше так не писать. ДЛя этого есть assertEquals, а ещё и статиечские импорты:
+`assertEquals(5, service.getQuestions().size());`
+есть
+
+14. src/main/java/service/SimpleUserService.java - не надо возвращать boolean. Если что-то пошло не так - то бросайте exception. У нас не C, а Java)
+есть
