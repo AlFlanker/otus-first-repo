@@ -22,6 +22,7 @@ import java.util.Locale;
 @Controller
 @PropertySource("/application.yml")
 public class TestControllerImpl implements TestController {
+
     private final UserService userService;
     private final UserAnswerService userAnswerService;
     private final QuestionService questionService;
@@ -44,7 +45,7 @@ public class TestControllerImpl implements TestController {
     }
 
     public void startTest() {
-//        locale = new Locale("en","US");
+        locale = new Locale("en","US");
         while(true) {
             view.showMessage(getMessage("greeting"));
             String line = view.ask();
@@ -100,4 +101,13 @@ public class TestControllerImpl implements TestController {
     private String getMessage(String message){
         return messageSource.getMessage(message,null,locale);
     }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
 }

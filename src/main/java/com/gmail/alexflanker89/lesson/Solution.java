@@ -15,7 +15,6 @@ public class Solution {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Solution.class);
         context.getBean(Solution.class).controller.startTest();
-
     }
 
 
