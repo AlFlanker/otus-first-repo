@@ -119,7 +119,6 @@ public class TestControllerImpl implements TestController {
         }
     }
 
-//    @ShellMethod(value = "helper",key="help")
-//    public void help
+
 
 }
