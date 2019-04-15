@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,7 +28,7 @@ public class Author {
     private String lastname;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
-    private Set<Book> books;
+    private Set<Book> books = new HashSet<>();
 
     @Column(name = "date_of_birth")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
