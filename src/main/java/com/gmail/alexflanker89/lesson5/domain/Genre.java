@@ -21,7 +21,7 @@ public class Genre {
 
     private String genreName;
 
-    @ManyToMany(mappedBy = "genres",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "genres",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private Set<Book> books = new HashSet<>();
 
     private boolean isDeleted;

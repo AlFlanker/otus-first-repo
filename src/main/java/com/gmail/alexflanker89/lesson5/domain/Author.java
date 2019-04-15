@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ public class Author {
 
     private String lastname;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors",cascade = CascadeType.REMOVE)
     private Set<Book> books = new HashSet<>();
 
     @Column(name = "date_of_birth")

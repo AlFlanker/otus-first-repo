@@ -1,7 +1,6 @@
 package com.gmail.alexflanker89.lesson5.domain;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,7 +34,7 @@ public class Book {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JoinTable(
             name = "book_genre",
             joinColumns = { @JoinColumn(name = "book_id") },
@@ -43,7 +42,7 @@ public class Book {
     )
     private Set<Genre> genres = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JoinTable(
             name = "book_author",
             joinColumns = { @JoinColumn(name = "book_id") },
@@ -67,7 +66,7 @@ public class Book {
         setUpdated(LocalDateTime.now());
     }
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.REMOVE)
     private Set<Comment> comments = new HashSet<>();
 
 
