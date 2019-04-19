@@ -7,8 +7,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 import java.util.List;
+
 @Transactional
 @SuppressWarnings("JpaQlInspection")
 @Repository
@@ -21,14 +22,18 @@ public class GenreRepositoryJpa extends BaseRepositoryImpl<Genre> implements Gen
     @Transactional(readOnly = true)
     @Override
     public List<Genre> findByBook(Book book) {
-        return entityManager.createQuery("select b.genres from Book b where b = :book").setParameter("book",book).getResultList();
+        return entityManager.createQuery("select b.genres from Book b where b = :book").setParameter("book", book).getResultList();
     }
 
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     @Override
-    public Genre findByName(String name) {
-        TypedQuery<Genre> query =(TypedQuery) entityManager.createQuery("select g from Genre g where g.genreName = :name").setParameter("name", name);
-        return query.getSingleResult();
+    public Genre findByName(String name) throws NoResultException {
+        try {
+            return (Genre) entityManager.createQuery("select g from Genre g where g.genreName = :name").setParameter("name", name).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
     }
 }

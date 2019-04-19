@@ -6,7 +6,7 @@ import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
 import com.gmail.alexflanker89.lesson5.services.interdaces.BooksService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,16 +14,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class SimpleBooksService implements BooksService {
     private final BookRepository bookRepository;
-
-    @Autowired
-    public SimpleBooksService(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
-
 
     @Override
     public List<Book> getAllByGenres(Set<Genre> genres){

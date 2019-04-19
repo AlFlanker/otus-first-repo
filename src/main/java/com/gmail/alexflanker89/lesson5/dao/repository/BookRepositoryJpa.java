@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +26,11 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
-    public List<Book> findByGernes(Set<Genre> genres)  throws BookNotExistExeption {
-        try{
+    public List<Book> findByGernes(Set<Genre> genres) throws BookNotExistExeption {
+        try {
             return entityManager.createQuery("select distinct b from Book b inner join b.genres g where g in (:genres)")
                     .setParameter("genres", genres).getResultList();
-        }
-        catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             throw new BookNotExistExeption(" нет такой книги!");
         }
     }
@@ -39,50 +39,63 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findByAuthors(Set<Author> authors) throws BookNotExistExeption {
-        HashSet books = new HashSet();
-        try{
-            books = new HashSet<>(entityManager.createQuery("select distinct b from Book b inner join b.authors a where a in (:authors)")
+        try {
+            return new HashSet<>(entityManager.createQuery("select distinct b from Book b inner join b.authors a where a in (:authors)")
                     .setParameter("authors", authors).getResultList());
-        }
-        catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             throw new BookNotExistExeption(" нет такой книги!");
         }
-        return books;
     }
 
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findByTitle(String title) {
-        return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.title = :title")
-                .setParameter("title",title)
-                .getResultList());
+        try {
+            return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.title = :title")
+                    .setParameter("title", title)
+                    .getResultList());
+        } catch (NoResultException e) {
+            throw new BookNotExistExeption("Книга не найдена");
+        }
     }
 
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDateGreaterThan(LocalDate date) {
-        return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate > :date")
-                .setParameter("date",date)
-                .getResultList());
+        try {
+            return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate > :date")
+                    .setParameter("date", date)
+                    .getResultList());
+        } catch (NoResultException e) {
+            throw new BookNotExistExeption("Книга не найдена");
+        }
     }
 
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDateLessThan(LocalDate date) {
-        return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate < :date")
-                .setParameter("date",date)
-                .getResultList());
+        try {
+            return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate < :date")
+                    .setParameter("date", date)
+                    .getResultList());
+        } catch (NoResultException e) {
+            throw new BookNotExistExeption("Книга не найдена");
+        }
     }
 
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDate(LocalDate date) {
-        return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate = :date")
-                .setParameter("date",date)
-                .getResultList());
+        try {
+            return new HashSet<>(entityManager.createQuery("select distinct b from Book b where b.releaseDate = :date")
+                    .setParameter("date", date)
+                    .getResultList());
+        } catch (NoResultException e) {
+            throw new BookNotExistExeption("Книга не найдена");
+        }
     }
 }

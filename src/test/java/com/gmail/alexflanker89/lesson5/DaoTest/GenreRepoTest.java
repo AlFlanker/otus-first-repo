@@ -1,12 +1,10 @@
 package com.gmail.alexflanker89.lesson5.DaoTest;
 
-import com.gmail.alexflanker89.lesson5.dao.interfaces.AuthorRepository;
 import com.gmail.alexflanker89.lesson5.dao.interfaces.BookRepository;
 import com.gmail.alexflanker89.lesson5.dao.interfaces.GenreRepository;
 import com.gmail.alexflanker89.lesson5.dao.repository.AuthorRepositoryJpa;
 import com.gmail.alexflanker89.lesson5.dao.repository.BookRepositoryJpa;
 import com.gmail.alexflanker89.lesson5.dao.repository.GenreRepositoryJpa;
-import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
 import org.junit.jupiter.api.Assertions;
@@ -19,10 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.time.LocalDate;
-import java.util.*;
-
+@DisplayName("Тестирование методов репозитария жанров")
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class})

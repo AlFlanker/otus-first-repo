@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-
+@DisplayName("Тестирование методов репозитария комментариев")
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class, CommentRepositoryJpa.class})

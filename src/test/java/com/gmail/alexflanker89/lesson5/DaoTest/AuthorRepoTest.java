@@ -8,7 +8,6 @@ import com.gmail.alexflanker89.lesson5.dao.repository.BookRepositoryJpa;
 import com.gmail.alexflanker89.lesson5.dao.repository.GenreRepositoryJpa;
 import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
-import com.gmail.alexflanker89.lesson5.execptions.AuthorNotExistException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +23,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+@DisplayName("Тестирование методов репозитария авторов")
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class})
@@ -76,7 +75,7 @@ public class AuthorRepoTest {
     @DisplayName("Загрузка по несуществующему в PersistContext Книге")
     public void getByGerneNotFound(){
         Book book = new Book();
-        Assertions.assertThrows(AuthorNotExistException.class,()->authorRepository.findByBook(Collections.singleton(book)));
+        Assertions.assertThrows(IllegalStateException.class,()->authorRepository.findByBook(Collections.singleton(book)));
     }
 
 

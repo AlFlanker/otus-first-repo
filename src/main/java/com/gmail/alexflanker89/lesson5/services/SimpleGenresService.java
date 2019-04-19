@@ -5,22 +5,18 @@ import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
 import com.gmail.alexflanker89.lesson5.execptions.GenreNotExistException;
 import com.gmail.alexflanker89.lesson5.services.interdaces.GenresService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class SimpleGenresService implements GenresService {
 
     private final GenreRepository genreRepository;
-
-    @Autowired
-    public SimpleGenresService(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
 
     @Override
     public List<Genre> getAll() {

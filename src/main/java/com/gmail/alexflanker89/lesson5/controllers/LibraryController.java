@@ -4,23 +4,22 @@ import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Comment;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
-import com.gmail.alexflanker89.lesson5.execptions.AuthorNotExistException;
-import com.gmail.alexflanker89.lesson5.execptions.BookNotExistExeption;
-import com.gmail.alexflanker89.lesson5.execptions.GenreNotExistException;
 import com.gmail.alexflanker89.lesson5.services.interdaces.AuthorsService;
 import com.gmail.alexflanker89.lesson5.services.interdaces.BooksService;
 import com.gmail.alexflanker89.lesson5.services.interdaces.CommentService;
 import com.gmail.alexflanker89.lesson5.services.interdaces.GenresService;
 import com.gmail.alexflanker89.lesson5.view.View;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import org.springframework.util.StringUtils;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @ShellComponent
 public class LibraryController {
     private final AuthorsService authorsService;
@@ -29,17 +28,9 @@ public class LibraryController {
     private final CommentService commentService;
     private final View view;
 
-    @Autowired
-    public LibraryController(AuthorsService authorsService, BooksService booksService, GenresService genresService, CommentService commentService, View view) {
-        this.authorsService = authorsService;
-        this.booksService = booksService;
-        this.genresService = genresService;
-        this.commentService = commentService;
-        this.view = view;
-    }
 
     /**
-     * Поиск п оавтору
+     * Поиск по автору
      *
      * @param name     Имя автора книги
      * @param lastname Фамилия автора книги
@@ -51,11 +42,11 @@ public class LibraryController {
         author.setName(name);
         author.setLastname(lastname);
         Set<Author> authors = authorsService.getByNameAndLastname(name, lastname);
-        try {
+        if (authors.size() == 0) {
+            view.showMessage("Нет книг данного автора ");
+        } else {
             Set<Book> allByAuthor = booksService.getAllByAuthors(authors);
             view.showBooks(allByAuthor);
-        } catch (BookNotExistExeption e) {
-            view.showMessage(e.getMessage());
         }
     }
 
@@ -77,28 +68,21 @@ public class LibraryController {
     public void genreMethod(@ShellOption(value = {"--g"}, defaultValue = "") String genre) {
         if (!StringUtils.isEmpty(genre)) {
             Genre g = genresService.getByGenreName(genre);
-            try {
-                view.showBooks(booksService.getAllByGenres(Collections.singleton(g)));
-            } catch (BookNotExistExeption e) {
-                view.showMessage(e.getMessage());
-            }
+            if(g ==null) view.showMessage("нет такого жанра");
+            else view.showBooks(booksService.getAllByGenres(Collections.singleton(g)));
         }
-        view.showMessage("Введите название жанра");
+        else view.showMessage("Введите название жанра");
     }
 
 
     @ShellMethod(value = "return all author if book_id =0, else books author(-s)", key = "authors")
     public void getAllAuthor(@ShellOption(value = "--book_id", defaultValue = "0") long id) {
-        try {
-            if (id == 0) {
-                view.showAuthors(authorsService.getAll());
-            } else {
-                Book book = booksService.getById(id);
-                view.showAuthors(authorsService.getByBooks(Collections.singleton(book)));
-
-            }
-        } catch (AuthorNotExistException e) {
-            view.showMessage(e.getMessage());
+        if (id == 0) {
+            view.showAuthors(authorsService.getAll());
+        } else {
+            Book book = booksService.getById(id);
+            if(book == null) view.showMessage("нет такой книги или не нет информации о авторах");
+            else view.showAuthors(authorsService.getByBooks(Collections.singleton(book)));
         }
     }
 
@@ -109,14 +93,11 @@ public class LibraryController {
      */
     @ShellMethod(value = "Return all genres if book_id !=0, else return chose books genres ", key = "genres")
     public void getAllGenre(@ShellOption(value = "--book_id", defaultValue = "0") long id) {
-        try {
-            if (id == 0) view.showGenres(genresService.getAll());
-            else {
-                Book book = booksService.getById(id);
-                view.showGenres(genresService.getAllByBook(book));
-            }
-        } catch (GenreNotExistException e) {
-            view.showMessage(e.getMessage());
+        if (id == 0) view.showGenres(genresService.getAll());
+        else {
+            Book book = booksService.getById(id);
+            if(book ==null) view.showMessage("Книга не найдена");
+            else view.showGenres(genresService.getAllByBook(book));
         }
     }
 
@@ -127,12 +108,9 @@ public class LibraryController {
      */
     @ShellMethod(value = "return books Description --id", key = "description")
     public void getBookDescription(@ShellOption(value = "--id") long id) {
-        try {
-            Book book = booksService.getById(id);
-            view.showBook(book);
-        } catch (BookNotExistExeption e) {
-            view.showMessage(e.getMessage());
-        }
+        Book book = booksService.getById(id);
+        if(book ==null) view.showMessage("Книга не найдена");
+        else view.showBook(book);
     }
 
     /**
@@ -167,6 +145,7 @@ public class LibraryController {
                 List<Comment> comments = commentService.getByBook(book);
                 view.showComments(comments);
             }
+            else view.showMessage("Книга не найдена");
         } else view.showMessage("Введите корректный id");
     }
 }

@@ -4,23 +4,19 @@ import com.gmail.alexflanker89.lesson5.dao.interfaces.AuthorRepository;
 import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.services.interdaces.AuthorsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class SimpleAuthorsService implements AuthorsService {
 
     private final AuthorRepository authorRepository;
-
-    @Autowired
-    public SimpleAuthorsService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
 
     @Override
     public List<Author> getAll() {

@@ -94,19 +94,19 @@ insert into book_genre VALUES
 (12,4),(12,1),(13,4),(13,5);
 
 insert into book_language values
- (1,'Rus'),
- (2,'Rus'),
- (3,'Rus'),
- (4,'Rus'),
- (5,'Rus'),
- (6,'Rus'),
- (7,'Rus'),
- (8,'Rus'),
- (9,'Rus'),
- (10,'Rus'),
- (11,'Rus'),
- (12,'Rus'),
- (13,'Rus');
+ (1,'RUS'),
+ (2,'RUS'),
+ (3,'RUS'),
+ (4,'RUS'),
+ (5,'RUS'),
+ (6,'RUS'),
+ (7,'RUS'),
+ (8,'RUS'),
+ (9,'RUS'),
+ (10,'RUS'),
+ (11,'RUS'),
+ (12,'RUS'),
+ (13,'RUS');
 
  insert into comment values
  (1,'2019-04-03','2019-04-03','user 1','bla bla bla user 1',false,1),
