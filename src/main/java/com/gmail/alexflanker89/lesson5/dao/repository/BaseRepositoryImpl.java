@@ -3,6 +3,7 @@ package com.gmail.alexflanker89.lesson5.dao.repository;
 import com.gmail.alexflanker89.lesson5.dao.interfaces.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.ParameterizedType;
@@ -22,24 +23,27 @@ public abstract class BaseRepositoryImpl<T> implements BaseRepository<T> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public T findById(long id){
         return entityManager.find(entryClass, id);
     }
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<T> findAll(){
         return entityManager.createQuery("from "+ entryClass.getName()).getResultList();
 
     };
+    @Transactional
     @Override
     public void delete(T entry){
         entityManager.remove(entry);
     };
     @Override
+    @Transactional
     public void save(T entry){
         entityManager.persist(entry);
     };
+    @Transactional
     @Override
     public void update(T entry){
         entityManager.merge(entry);

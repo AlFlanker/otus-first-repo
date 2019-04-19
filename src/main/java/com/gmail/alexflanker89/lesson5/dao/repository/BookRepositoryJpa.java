@@ -7,9 +7,9 @@ import com.gmail.alexflanker89.lesson5.domain.Genre;
 import com.gmail.alexflanker89.lesson5.execptions.BookNotExistExeption;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,21 +22,20 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
         super(entityManager);
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public List<Book> findByGernes(Set<Genre> genres)  throws BookNotExistExeption {
-        List books = new ArrayList();
         try{
-            books  = entityManager.createQuery("select distinct b from Book b inner join b.genres g where g in (:genres)")
+            return entityManager.createQuery("select distinct b from Book b inner join b.genres g where g in (:genres)")
                     .setParameter("genres", genres).getResultList();
         }
         catch (IllegalStateException e){
             throw new BookNotExistExeption(" нет такой книги!");
         }
-
-        return books;
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findByAuthors(Set<Author> authors) throws BookNotExistExeption {
@@ -51,6 +50,7 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
         return books;
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findByTitle(String title) {
@@ -59,6 +59,7 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
                 .getResultList());
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDateGreaterThan(LocalDate date) {
@@ -67,6 +68,7 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
                 .getResultList());
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDateLessThan(LocalDate date) {
@@ -75,6 +77,7 @@ public class BookRepositoryJpa extends BaseRepositoryImpl<Book> implements BookR
                 .getResultList());
     }
 
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public Set<Book> findAllByReleaseDate(LocalDate date) {

@@ -17,7 +17,7 @@ public class CommentRepositoryJpa extends BaseRepositoryImpl<Comment> implements
         super(entityManager);
     }
 
-
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     @Override
     public List<Comment> findByBook(Book book) {
