@@ -5,23 +5,19 @@ import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Comment;
 import com.gmail.alexflanker89.lesson5.execptions.CommentNotExistException;
 import com.gmail.alexflanker89.lesson5.services.interdaces.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Transactional
 @Service
 public class SimpleCommentService implements CommentService {
 
     private final CommentRepository commentRepository;
-
-    @Autowired
-    public SimpleCommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     public List<Comment> getByBook(Book book) throws CommentNotExistException {
