@@ -51,7 +51,7 @@ public class SimpleAuthorsService implements AuthorsService {
     @Override
     public List<Author> getByBooks(Set<Book> books) throws AuthorNotExistException {
         List<Author> authors = authorRepository.findByBooks(books);
-        if (authors.equals(Collections.emptyList())) throw new AuthorNotExistException("not found authos");
+        if (authors.equals(Collections.emptyList())) throw new AuthorNotExistException("not found authors");
         else return authors;
     }
 
