@@ -1,7 +1,8 @@
 package com.gmail.alexflanker89.lesson5.services;
 
 
-import com.gmail.alexflanker89.lesson5.dao.interfaces.BookRepository;
+
+import com.gmail.alexflanker89.lesson5.dao.repository.BookRepository;
 import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
@@ -28,14 +29,14 @@ public class SimpleBooksService implements BooksService {
 
     @Override
     public List<Book> getAllByGenres(Set<Genre> genres) throws BookNotExistExeption{
-        List<Book> books = bookRepository.findByGernes(genres);
+        List<Book> books = bookRepository.findByGenresIn(genres);
         if(books.equals(Collections.emptyList())) throw new BookNotExistExeption("нет книг с таким жанром");
         return books;
     }
 
     @Override
     public Set<Book> getAllByAuthors(Set<Author> authors) throws BookNotExistExeption{
-        Set<Book> byAuthors = bookRepository.findByAuthors(authors);
+        Set<Book> byAuthors = bookRepository.findByAuthorsIn(authors);
         if(byAuthors.equals(Collections.emptySet())) throw new BookNotExistExeption("нет книг такого автора!");
         return byAuthors;
     }
@@ -63,7 +64,7 @@ public class SimpleBooksService implements BooksService {
 
     @Override
     public Book getById(long id) {
-        return bookRepository.findById(id);
+        return bookRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -83,6 +84,6 @@ public class SimpleBooksService implements BooksService {
 
     @Override
     public void update(Book book) {
-        bookRepository.update(book);
+        bookRepository.save(book);
     }
 }

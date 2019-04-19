@@ -1,6 +1,6 @@
 package com.gmail.alexflanker89.lesson5.services;
 
-import com.gmail.alexflanker89.lesson5.dao.interfaces.CommentRepository;
+import com.gmail.alexflanker89.lesson5.dao.repository.CommentRepository;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Comment;
 import com.gmail.alexflanker89.lesson5.execptions.CommentNotExistException;
@@ -32,7 +32,7 @@ public class SimpleCommentService implements CommentService {
 
     @Override
     public Comment getById(long id) {
-        return commentRepository.findById(id);
+        return commentRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class SimpleCommentService implements CommentService {
 
     @Override
     public void update(Comment comment) {
-        commentRepository.update(comment);
+        commentRepository.save(comment);
     }
 }

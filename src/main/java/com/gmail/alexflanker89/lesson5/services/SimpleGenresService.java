@@ -1,6 +1,7 @@
 package com.gmail.alexflanker89.lesson5.services;
 
-import com.gmail.alexflanker89.lesson5.dao.interfaces.GenreRepository;
+
+import com.gmail.alexflanker89.lesson5.dao.repository.GenreRepository;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.domain.Genre;
 import com.gmail.alexflanker89.lesson5.execptions.GenreNotExistException;
@@ -33,7 +34,7 @@ public class SimpleGenresService implements GenresService {
     @Override
     public List<Genre> getAllByBook(Book book) throws GenreNotExistException {
         if (book == null) throw new GenreNotExistException("book not be null");
-        List<Genre> genres = genreRepository.findByBook(book);
+        List<Genre> genres = genreRepository.findByBooks(book);
         if (genres.equals(Collections.emptyList()))
             throw new GenreNotExistException("not found by book_id = " + book.getId());
         else return genres;
@@ -41,12 +42,12 @@ public class SimpleGenresService implements GenresService {
 
     @Override
     public Genre getByGenreName(String name) {
-        return genreRepository.findByName(name);
+        return genreRepository.findByGenreName(name);
     }
 
     @Override
     public Genre getById(long id) {
-        return genreRepository.findById(id);
+        return genreRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class SimpleGenresService implements GenresService {
 
     @Override
     public void update(Genre genre) {
-        genreRepository.update(genre);
+        genreRepository.save(genre);
     }
 
 

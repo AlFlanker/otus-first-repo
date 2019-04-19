@@ -1,6 +1,7 @@
 package com.gmail.alexflanker89.lesson5.services;
 
-import com.gmail.alexflanker89.lesson5.dao.interfaces.AuthorRepository;
+
+import com.gmail.alexflanker89.lesson5.dao.repository.AuthorRepository;
 import com.gmail.alexflanker89.lesson5.domain.Author;
 import com.gmail.alexflanker89.lesson5.domain.Book;
 import com.gmail.alexflanker89.lesson5.execptions.AuthorNotExistException;
@@ -33,7 +34,7 @@ public class SimpleAuthorsService implements AuthorsService {
 
     @Override
     public Author getById(long id) {
-        Author author = authorRepository.findById(id);
+        Author author = authorRepository.findById(id).orElse(null);
         if (author == null) throw new AuthorNotExistException("not found!");
         else return author;
     }
@@ -41,7 +42,7 @@ public class SimpleAuthorsService implements AuthorsService {
 
     @Override
     public Set<Author> getByNameAndLastname(String name, String lastname) {
-        Set<Author> authors = authorRepository.findByNameAndLastname(name, lastname);
+        Set<Author> authors = authorRepository.findAllByNameAndLastname(name, lastname);
         if (authors.equals(Collections.emptySet())) throw new AuthorNotExistException("not found!");
         else return authors;
     }
@@ -49,7 +50,7 @@ public class SimpleAuthorsService implements AuthorsService {
 
     @Override
     public List<Author> getByBooks(Set<Book> books) throws AuthorNotExistException {
-        List<Author> authors = authorRepository.findByBook(books);
+        List<Author> authors = authorRepository.findByBooks(books);
         if (authors.equals(Collections.emptyList())) throw new AuthorNotExistException("not found authos");
         else return authors;
     }
@@ -66,6 +67,6 @@ public class SimpleAuthorsService implements AuthorsService {
 
     @Override
     public void update(Author entry) {
-        authorRepository.update(entry);
+        authorRepository.save(entry);
     }
 }
