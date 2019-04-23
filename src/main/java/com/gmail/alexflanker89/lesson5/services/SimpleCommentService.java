@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class SimpleCommentService implements CommentService {
     @Override
     public List<Comment> getByBook(Book book) throws CommentNotExistException {
         List<Comment> comments = commentRepository.findByBook(book);
-        if(comments.equals(Collections.emptyList())) throw new CommentNotExistException("нет комментариев");
+        if(comments.isEmpty()) throw new CommentNotExistException("нет комментариев");
         return comments;
     }
 

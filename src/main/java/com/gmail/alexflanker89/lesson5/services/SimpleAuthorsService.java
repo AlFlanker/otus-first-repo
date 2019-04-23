@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -25,14 +25,14 @@ public class SimpleAuthorsService implements AuthorsService {
     @Override
     public List<Author> getAll() throws AuthorNotExistException {
         List<Author> authors = authorRepository.findAll();
-        if (authors.equals(Collections.emptyList())) throw new AuthorNotExistException("not found!");
+        if (authors.isEmpty()) throw new AuthorNotExistException("not found!");
         else return authors;
     }
 
     @Override
     public Author getById(long id) {
         Author author = authorRepository.findById(id).orElse(null);
-        if (author == null) throw new AuthorNotExistException("not found!");
+        if (Objects.isNull(author)) throw new AuthorNotExistException("not found!");
         else return author;
     }
 
@@ -40,7 +40,7 @@ public class SimpleAuthorsService implements AuthorsService {
     @Override
     public Set<Author> getByNameAndLastname(String name, String lastname) {
         Set<Author> authors = authorRepository.findAllByNameAndLastname(name, lastname);
-        if (authors.equals(Collections.emptySet())) throw new AuthorNotExistException("not found!");
+        if (authors.isEmpty()) throw new AuthorNotExistException("not found!");
         else return authors;
     }
 
@@ -48,7 +48,7 @@ public class SimpleAuthorsService implements AuthorsService {
     @Override
     public List<Author> getByBooks(Set<Book> books) throws AuthorNotExistException {
         List<Author> authors = authorRepository.findByBooks(books);
-        if (authors.equals(Collections.emptyList())) throw new AuthorNotExistException("not found authors");
+        if (authors.isEmpty()) throw new AuthorNotExistException("not found authors");
         else return authors;
     }
 

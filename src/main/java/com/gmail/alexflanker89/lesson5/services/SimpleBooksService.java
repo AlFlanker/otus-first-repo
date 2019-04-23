@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 @RequiredArgsConstructor
@@ -23,35 +22,35 @@ public class SimpleBooksService implements BooksService {
     @Override
     public List<Book> getAllByGenres(Set<Genre> genres) throws BookNotExistExeption{
         List<Book> books = bookRepository.findByGenresIn(genres);
-        if(books.equals(Collections.emptyList())) throw new BookNotExistExeption("нет книг с таким жанром");
+        if(books.isEmpty()) throw new BookNotExistExeption("нет книг с таким жанром");
         return books;
     }
 
     @Override
     public Set<Book> getAllByAuthors(Set<Author> authors) throws BookNotExistExeption{
         Set<Book> byAuthors = bookRepository.findByAuthorsIn(authors);
-        if(byAuthors.equals(Collections.emptySet())) throw new BookNotExistExeption("нет книг такого автора!");
+        if(byAuthors.isEmpty()) throw new BookNotExistExeption("нет книг такого автора!");
         return byAuthors;
     }
 
     @Override
     public Set<Book> getAllByReleaseDateGreaterThan(LocalDate date) throws BookNotExistExeption {
         Set<Book> books = bookRepository.findAllByReleaseDateGreaterThan(date);
-        if(books.equals(Collections.emptySet())) throw new BookNotExistExeption("нет книг!");
+        if(books.isEmpty()) throw new BookNotExistExeption("нет книг!");
         return books;
     }
 
     @Override
     public Set<Book> getAllByReleaseDateLessThan(LocalDate date) throws BookNotExistExeption {
         Set<Book> books = bookRepository.findAllByReleaseDateLessThan(date);
-        if(books.equals(Collections.emptySet())) throw new BookNotExistExeption("нет книг!");
+        if(books.isEmpty()) throw new BookNotExistExeption("нет книг!");
         return books;
     }
 
     @Override
     public Set<Book> getAllByReleaseDate(LocalDate date)throws BookNotExistExeption {
         Set<Book> books = bookRepository.findAllByReleaseDate(date);
-        if(books.equals(Collections.emptySet())) throw new BookNotExistExeption("нет книг!");
+        if(books.isEmpty()) throw new BookNotExistExeption("нет книг!");
         return books;
     }
 
