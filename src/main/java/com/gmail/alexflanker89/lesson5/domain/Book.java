@@ -3,6 +3,7 @@ package com.gmail.alexflanker89.lesson5.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Book {
 
     private String description;
 
+    @BatchSize(size = 50)
     @ElementCollection(targetClass = Languages.class,fetch = FetchType.EAGER)
     @CollectionTable(name="book_language",joinColumns = @JoinColumn(name="book_id"))
     @Enumerated(EnumType.STRING)
@@ -34,6 +36,7 @@ public class Book {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
 
+    @BatchSize(size = 50)
     @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JoinTable(
             name = "book_genre",
@@ -42,6 +45,7 @@ public class Book {
     )
     private Set<Genre> genres = new HashSet<>();
 
+    @BatchSize(size = 50)
     @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JoinTable(
             name = "book_author",
