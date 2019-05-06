@@ -63,7 +63,7 @@ public class SimpleView implements View {
         System.out.println(getLine(40,'*'));
     }
 
-    private String getLine(int lenght,char c){
+    private java.lang.String getLine(int lenght, char c){
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < lenght ; i++) {
             sb.append(c);
@@ -82,7 +82,7 @@ public class SimpleView implements View {
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showMessage(java.lang.String message) {
         System.out.println(message);
     }
 }

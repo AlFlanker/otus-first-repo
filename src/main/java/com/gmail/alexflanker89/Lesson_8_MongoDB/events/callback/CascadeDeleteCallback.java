@@ -40,16 +40,13 @@ public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
                                 Object id = id1.get(v);
                                 getMongoOperations().findAndRemove(Query.query(Criteria.where("_id").is(id)),aClass);
                                 System.out.println();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (NoSuchFieldException e) {
+                            } catch (IllegalAccessException | NoSuchFieldException e) {
                                 e.printStackTrace();
                             }
                         });
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-
                 }
                 else getMongoOperations().remove(fieldValue);
             }
