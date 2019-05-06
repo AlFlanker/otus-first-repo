@@ -21,20 +21,14 @@ import java.util.Set;
 @EqualsAndHashCode(of={"title","edition","description","releaseDate"})
 @Document
 public class Book {
-
-
     @Id
-    private String id;
-    private String title;
-    private String edition;
-    private String description;
+    private java.lang.String id;
+    private java.lang.String title;
+    private java.lang.String edition;
+    private java.lang.String description;
     private Set<Languages> languages;
     private LocalDate releaseDate;
-    @DBRef
-    @CascadeSave
     private List<Genre> genres = new ArrayList<>();
-    @DBRef
-    @CascadeSave
     private List<Author> authors = new ArrayList<>();
     private LocalDate created;
     private LocalDate updated;

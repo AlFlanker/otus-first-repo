@@ -12,12 +12,12 @@ import java.util.*;
 @ChangeLog(order = "001")
 public class InitLibraryChangeLog {
 
-    private Map<String, Author> authorHashMap = new HashMap<>(5);
-    private Map<String, Genre> genreMap = new HashMap<>(5);
+    private Map<java.lang.String, Author> authorHashMap = new HashMap<>(5);
+    private Map<java.lang.String, Genre> genreMap = new HashMap<>(5);
     private List<Comment> comments = new ArrayList<>();
 
 
-    private void InitGenre() {
+    private void initGenre() {
         Genre genre = new Genre();
         genre.setGenreName("Роман");
         genreMap.put("Роман", genre);
@@ -35,7 +35,7 @@ public class InitLibraryChangeLog {
         genreMap.put("Фантастика", genre);
     }
 
-    private void InitAuthor() {
+    private void initAuthor(MongoTemplate mongoTemplate) {
         Author author = new Author("Артур", "Хейли", LocalDate.of(1920, 4, 5));
         authorHashMap.put("Артур", author);
 
@@ -50,6 +50,11 @@ public class InitLibraryChangeLog {
 
         author = new Author("Владимир", "Решетников", LocalDate.of(1959, 12, 14));
         authorHashMap.put("Владимир", author);
+
+        authorHashMap.forEach((s, a) -> {
+            Author save = mongoTemplate.save(a);
+            authorHashMap.put(s,save);
+        });
 
     }
 
@@ -78,10 +83,10 @@ public class InitLibraryChangeLog {
     }
 
     @ChangeSet(order = "001", id = "addSomeBooks", author = "AlexFlanker")
-    public void InitBook(MongoTemplate mongoTemplate) {
+    public void initBook(MongoTemplate mongoTemplate) {
         createComment();
-        InitAuthor();
-        InitGenre();
+        initAuthor(mongoTemplate);
+        initGenre();
         Book book = new Book();
         book.setTitle("Отель");
         book.setEdition("Книга на все времена");
@@ -107,6 +112,20 @@ public class InitLibraryChangeLog {
         book.setGenres(Collections.singletonList(genreMap.get("Фантастика")));
         book.setComments(comments);
         mongoTemplate.save(book);
+        book = new Book();
+        book.setTitle("Чушь собачья");
+        book.setEdition("Суровая правда жизни");
+        book.setDescription("Быть или не пить? И бла-бла");
+        book.setLanguages(Collections.singleton(Languages.RUS));
+        book.setReleaseDate(LocalDate.of(2100, 1, 1));
+        book.setCreated(LocalDate.now());
+        book.setUpdated(LocalDate.now());
+        book.setAuthors(Arrays.asList(authorHashMap.get("Артур")));
+        book.setGenres(Collections.singletonList(genreMap.get("Фантастика")));
+        book.setComments(comments);
+        mongoTemplate.save(book);
+
+        genreMap.forEach((s, genre) -> mongoTemplate.save(genre));
 
     }
 

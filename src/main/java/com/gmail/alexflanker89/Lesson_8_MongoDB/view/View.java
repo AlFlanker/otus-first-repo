@@ -12,7 +12,7 @@ public interface View {
     void showGenres(Collection<Genre> genreList);
     void showBooks(Collection<Book> books);
     void showAuthors(Collection<Author> authors);
-    void showMessage(String message);
+    void showMessage(java.lang.String message);
     void showBook(Book book);
     void shortShowBook(Book book);
     void showComments(Collection<Comment> comments);

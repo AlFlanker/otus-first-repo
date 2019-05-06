@@ -27,7 +27,7 @@ public class Author {
     private String lastname;
     private LocalDate dateOfBirth;
 
-    public Author(String name, String lastname, LocalDate dateOfBirth) {
+    public Author(String  name, String  lastname, LocalDate dateOfBirth) {
         this.name = name;
         this.lastname = lastname;
         this.dateOfBirth = dateOfBirth;
