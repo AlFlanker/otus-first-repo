@@ -8,13 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.shell.jline.InteractiveShellApplicationRunner;
-import org.springframework.shell.jline.ScriptShellApplicationRunner;
 
-@SpringBootTest(properties = {
-        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false",
-        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
-})
+@SpringBootTest
 @DisplayName("Проверка сервеса жанров")
 public class GenreServiceTest {
     @Autowired

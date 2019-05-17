@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface BookRepo extends MongoRepository<Book, java.lang.String> {
@@ -15,6 +16,7 @@ public interface BookRepo extends MongoRepository<Book, java.lang.String> {
     List<Book> findByReleaseDateGreaterThan(LocalDate date);
     List<Book> findByAuthorsIn(Set<Author> authors);
     List<Book> findByGenresIn(Set<Genre> genres);
+    Optional<Book> findById(String id);
 
 }
 

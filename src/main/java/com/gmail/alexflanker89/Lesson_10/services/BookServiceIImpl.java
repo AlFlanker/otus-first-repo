@@ -104,4 +104,9 @@ public class BookServiceIImpl implements BookService {
     public List<Author> getByBookId(String id) {
         return mongoOperations.find(Query.query(Criteria.where("_id").is(id)), Book.class).stream().flatMap(book -> book.getAuthors().stream()).collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<Book> getBookById(String id) {
+        return bookRepo.findById(id);
+    }
 }

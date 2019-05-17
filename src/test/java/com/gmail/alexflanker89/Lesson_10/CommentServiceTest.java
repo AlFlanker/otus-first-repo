@@ -13,17 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.shell.jline.InteractiveShellApplicationRunner;
-import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@SpringBootTest(properties = {
-        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false",
-        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
-})
+@SpringBootTest
 @DisplayName("Проверка сервеса комментариев")
 @ExtendWith(SpringExtension.class)
 public class CommentServiceTest {
