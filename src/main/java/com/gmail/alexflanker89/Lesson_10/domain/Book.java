@@ -24,7 +24,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @ToString(of = {"id", "title", "edition", "description"})
-@EqualsAndHashCode(of={"title","edition","description","releaseDate_begin"})
+@EqualsAndHashCode(of = {"title", "edition", "description", "releaseDate_begin"})
 @Document
 public class Book {
     @Id
@@ -38,9 +38,11 @@ public class Book {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate releaseDate;
-    @DBRef @CascadeSave
+    @DBRef
+    @CascadeSave
     private List<Genre> genres = new ArrayList<>();
-    @DBRef @CascadeSave
+    @DBRef
+    @CascadeSave
     private List<Author> authors = new ArrayList<>();
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -52,7 +54,9 @@ public class Book {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate updated;
-    @DBRef @CascadeDelete @CascadeSave
+    @DBRef
+    @CascadeDelete
+    @CascadeSave
     private List<Comment> comments = new ArrayList<>();
 
 

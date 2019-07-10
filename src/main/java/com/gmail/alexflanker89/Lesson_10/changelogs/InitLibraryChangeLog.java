@@ -36,7 +36,7 @@ public class InitLibraryChangeLog {
         genreMap.put("Фантастика", genre);
         genreMap.forEach((s, genre_) -> {
             Genre save = mongoTemplate.save(genre_);
-            genreMap_tmp.put(s,save);
+            genreMap_tmp.put(s, save);
         });
         genreMap = genreMap_tmp;
     }
@@ -59,7 +59,7 @@ public class InitLibraryChangeLog {
 
         authorHashMap.forEach((s, a) -> {
             Author save = mongoTemplate.save(a);
-            authorHashMap.put(s,save);
+            authorHashMap.put(s, save);
         });
 
     }
@@ -132,9 +132,7 @@ public class InitLibraryChangeLog {
         mongoTemplate.save(book);
 
 
-
     }
-
 
 
 }

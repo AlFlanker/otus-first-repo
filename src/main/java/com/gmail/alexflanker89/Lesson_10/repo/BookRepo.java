@@ -12,12 +12,19 @@ import java.util.Set;
 
 public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findByReleaseDate(LocalDate date);
-    Book findByTitleAndEditionAndReleaseDate(String title,String edition,LocalDate date);
+
+    Book findByTitleAndEditionAndReleaseDate(String title, String edition, LocalDate date);
+
     List<Book> findByReleaseDateBefore(LocalDate date);
+
     List<Book> findByReleaseDateGreaterThan(LocalDate date);
+
     List<Book> findByAuthorsIn(Set<Author> authors);
+
     List<Book> findByGenresIn(Set<Genre> genres);
+
     Optional<Book> findById(String id);
+
     Optional<Book> findByTitle(String title);
 
 }

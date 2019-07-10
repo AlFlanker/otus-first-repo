@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Set;
 
-public interface GenreRepo extends MongoRepository<Genre,String> {
+public interface GenreRepo extends MongoRepository<Genre, String> {
     List<Genre> findByGenreNameIn(Set<String> names);
 }

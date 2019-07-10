@@ -7,5 +7,5 @@ export default {
     update: book => books.update({id: book.id}, book),
     remove: id => books.remove({id}),
     getAll: id=>books.get({id:id}),
-    getByParam:prm => books.get({},prm)
+
 }

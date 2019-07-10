@@ -6,14 +6,15 @@
         :book="book"
         :edit="editBook"
         :showComments="showCommentsFunc"
-                  class="(xs3|md4|sm6)" />
+                  class="xs3 md4 sm6" />
     </v-layout>
     </v-container>
 </template>
 
 <script>
     import BookRow from 'components/BookRow.vue'
-    import { mapState } from 'vuex'
+    import {mapState} from 'vuex'
+
     export default {
         props:['editForm','showComments'],
         components: {

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @EqualsAndHashCode(of = {"genreName"})
-@ToString(of = {"id","genreName"})
+@ToString(of = {"id", "genreName"})
 @NoArgsConstructor
 @Document
 public class Genre {

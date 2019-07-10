@@ -16,7 +16,7 @@ public class ApplicationConfig {
 
     @Bean
     public SpringBootMongock mongock(ApplicationContext springContext, MongoClient mongoClient) {
-        return  (SpringBootMongock)new SpringBootMongockBuilder(mongoClient, "library", CHANGELOGS_PACKAGE).setApplicationContext(springContext).setLockQuickConfig().build();
+        return (SpringBootMongock) new SpringBootMongockBuilder(mongoClient, "library", CHANGELOGS_PACKAGE).setApplicationContext(springContext).setLockQuickConfig().build();
 
     }
 }

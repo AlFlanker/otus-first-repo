@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -81,11 +82,12 @@ public class BookServiceIImpl implements BookService {
     public void delete(Book entry) {
         bookRepo.delete(entry);
     }
+
     //BookRepo отдавал сущность без id!!
     @Override
     public Book save(Book entry) {
         bookRepo.save(entry);
-        return bookRepo.findByTitleAndEditionAndReleaseDate(entry.getTitle(),entry.getEdition(),entry.getReleaseDate());
+        return bookRepo.findByTitleAndEditionAndReleaseDate(entry.getTitle(), entry.getEdition(), entry.getReleaseDate());
 
     }
 
@@ -171,27 +173,64 @@ public class BookServiceIImpl implements BookService {
         return save(fromDTO);
     }
 
-    private Criteria getCriteria(RequestParams params){
+    private Criteria getCriteria(RequestParams params) {
 
-        Criteria criteria = new Criteria();
-        if(Objects.nonNull(params.getGenres())){
-            criteria = Criteria.where("genres").in(params.getGenres());
+        Criteria criteria = null;
+        if (Objects.nonNull(params.getGenres())) {
+            if (!params.getGenres().isEmpty()) {
+                criteria = Criteria.where("genres").in(params.getGenres());
+            }
         }
-        if(Objects.nonNull(params.getAuthors())){
-            criteria.and("authors").in(params.getAuthors());
+        if (Objects.nonNull(params.getAuthors())) {
+            if (!params.getAuthors().isEmpty()) {
+                if (Objects.isNull(criteria)) {
+                    criteria = Criteria.where("authors").in(params.getAuthors());
+                } else {
+                    criteria.and("authors").in(params.getAuthors());
+                }
+            }
         }
-        if(Objects.nonNull(params.getReleaseDate_begin())){
-            Instant finstant=LocalDateTime.of(params.getReleaseDate_begin(),LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
-            Instant finstant1=LocalDateTime.of(params.getReleaseDate_end(),LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
-            criteria.and("releaseDate").gte(finstant).lt(finstant1);
+
+        if (Objects.nonNull(params.getReleaseDate_begin())
+                && Objects.nonNull(params.getReleaseDate_end())) {
+            Instant begin = LocalDateTime.of(params.getReleaseDate_begin(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+            Instant end = LocalDateTime.of(params.getReleaseDate_end(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+
+            if (Objects.isNull(criteria)) {
+                criteria = Criteria.where("releaseDate").gte(begin).lt(end);
+            } else {
+                criteria.and("releaseDate").gte(begin).lt(end);
+            }
+        } else if (Objects.nonNull(params.getReleaseDate_begin())) {
+            Instant begin = LocalDateTime.of(params.getReleaseDate_begin(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+
+            if (Objects.isNull(criteria)) {
+                criteria = Criteria.where("releaseDate").gte(begin);
+            } else {
+                criteria.and("releaseDate").gte(begin);
+            }
+
+        } else if (Objects.nonNull(params.getReleaseDate_end())) {
+            Instant end = LocalDateTime.of(params.getReleaseDate_end(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+
+            if (Objects.isNull(criteria)) {
+                criteria = Criteria.where("releaseDate").lt(end);
+            } else {
+                criteria.and("releaseDate").lt(end);
+            }
         }
 
         return criteria;
     }
+
     @Override
     public List<Book> getByParams(RequestParams params) {
         Query query = new Query();
-        query.addCriteria(getCriteria(params));
+        Criteria criteria = getCriteria(params);
+        if (Objects.isNull(criteria)) {
+            return mongoOperations.findAll(Book.class);
+        }
+        query.addCriteria(criteria);
         List<Book> books = mongoOperations.find(query, Book.class);
         return books;
     }

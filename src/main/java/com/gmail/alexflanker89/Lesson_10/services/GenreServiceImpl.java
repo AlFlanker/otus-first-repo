@@ -29,7 +29,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public List<Genre> getAllGenreByBook(String id) {
-        if(StringUtils.isEmpty(id)) return getAll();
-        else return Optional.of((Objects.requireNonNull(mongoOperations.findOne(Query.query(Criteria.where("id").is(id).and("genres").exists(true)), Book.class))).getGenres()).orElse(Collections.emptyList());
+        if (StringUtils.isEmpty(id)) return getAll();
+        else
+            return Optional.of((Objects.requireNonNull(mongoOperations.findOne(Query.query(Criteria.where("id").is(id).and("genres").exists(true)), Book.class))).getGenres()).orElse(Collections.emptyList());
     }
 }

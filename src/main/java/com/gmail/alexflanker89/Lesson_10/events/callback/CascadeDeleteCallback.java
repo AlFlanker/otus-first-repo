@@ -20,26 +20,27 @@ public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
         this.source = source;
         this.setMongoOperations(mongoOperations);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
         ReflectionUtils.makeAccessible(field);
-        if(field.isAnnotationPresent(DBRef.class) && field.isAnnotationPresent(CascadeDelete.class)){
+        if (field.isAnnotationPresent(DBRef.class) && field.isAnnotationPresent(CascadeDelete.class)) {
             final Object fieldValue = field.get(getSource());
             if (Objects.nonNull(fieldValue)) {
                 final FieldCallback callback = new FieldCallback();
                 ReflectionUtils.doWithFields(fieldValue.getClass(), callback);
-                if(Iterable.class.isAssignableFrom(fieldValue.getClass())) {
+                if (Iterable.class.isAssignableFrom(fieldValue.getClass())) {
                     ParameterizedType genericType = (ParameterizedType) field.getGenericType();
                     Type actualTypeArgument = genericType.getActualTypeArguments()[0];
                     try {
                         Class<?> aClass = Class.forName(actualTypeArgument.getTypeName());
-                        ((Iterable) fieldValue).forEach(( v) -> {
+                        ((Iterable) fieldValue).forEach((v) -> {
                             try {
                                 Field id1 = aClass.getDeclaredField("id");
                                 ReflectionUtils.makeAccessible(id1);
                                 Object id = id1.get(v);
-                                getMongoOperations().findAndRemove(Query.query(Criteria.where("id").is(id)),aClass);
+                                getMongoOperations().findAndRemove(Query.query(Criteria.where("id").is(id)), aClass);
                                 System.out.println();
                             } catch (IllegalAccessException | NoSuchFieldException e) {
                                 e.printStackTrace();
@@ -48,8 +49,7 @@ public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-                }
-                else getMongoOperations().remove(fieldValue);
+                } else getMongoOperations().remove(fieldValue);
             }
         }
 

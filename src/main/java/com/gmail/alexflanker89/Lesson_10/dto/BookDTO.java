@@ -15,12 +15,13 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
-@EqualsAndHashCode(of = {"id","title","edition","description","releaseDate_begin","genres","authors"})
+@EqualsAndHashCode(of = {"id", "title", "edition", "description", "releaseDate_begin", "genres", "authors"})
 @RequiredArgsConstructor
 public class BookDTO {
     private String id;
-    @Size(min = 2,max = 100, message = "название книги должно содержать от 2 до 100 символов!")
+    @Size(min = 2, max = 100, message = "название книги должно содержать от 2 до 100 символов!")
     private String title;
     @Size(max = 100, message = "издательство должно содержать не более 100 символов!")
     private String edition;

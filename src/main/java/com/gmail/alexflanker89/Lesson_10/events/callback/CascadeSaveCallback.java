@@ -16,6 +16,7 @@ public class CascadeSaveCallback implements ReflectionUtils.FieldCallback {
         this.source = source;
         this.setMongoOperations(mongoOperations);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -25,8 +26,9 @@ public class CascadeSaveCallback implements ReflectionUtils.FieldCallback {
             if (fieldValue != null) {
                 final FieldCallback callback = new FieldCallback();
                 ReflectionUtils.doWithFields(fieldValue.getClass(), callback);
-               if(Iterable.class.isAssignableFrom(fieldValue.getClass())) ((Collection) fieldValue).forEach(v -> getMongoOperations().save(v));
-               else getMongoOperations().save(fieldValue);
+                if (Iterable.class.isAssignableFrom(fieldValue.getClass()))
+                    ((Collection) fieldValue).forEach(v -> getMongoOperations().save(v));
+                else getMongoOperations().save(fieldValue);
             }
         }
 

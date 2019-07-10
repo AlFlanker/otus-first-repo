@@ -18,12 +18,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
-   private final BookRepo bookRepo;
-   private final BookService bookService;
+    private final BookRepo bookRepo;
+    private final BookService bookService;
 
     @Override
     public Book addComment(String bookid, CommentDTO dto) {
-        Book book=bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
+        Book book = bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
         Comment comment = new Comment();
         comment.setComment(dto.getComment());
         comment.setCreated(LocalDateTime.now());
@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Book removeComment(String bookid, String comment) {
-        Book book=bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
+        Book book = bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
         book.getComments().stream().filter(c -> c.getId().equals(comment)).findFirst().ifPresent(c -> book.getComments().remove(c));
         return bookService.save(book);
     }
@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> getAllCommentByBookId(String book_id) {
         Optional<Book> book = bookRepo.findById(book_id);
-        if(book.isPresent()){
+        if (book.isPresent()) {
             return book.get().getComments();
         } else return Collections.emptyList();
 

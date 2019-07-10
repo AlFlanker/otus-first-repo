@@ -18,26 +18,27 @@ import java.util.Collections;
 @RestController
 public class CommentController {
     private final CommentService commentService;
+
     @PostMapping("/comment/{id}")
-    public ResponseEntity addComment(@PathVariable("id") String id, @Valid @RequestBody CommentDTO comment, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public ResponseEntity addComment(@PathVariable("id") String id, @Valid @RequestBody CommentDTO comment, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtil.getErrorsMap(bindingResult));
         }
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(commentService.addComment(id, comment));
-        }catch (BookNotFoundExceptions e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("book","BookNotFoundExceptions"));
+        } catch (BookNotFoundExceptions e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("book", "BookNotFoundExceptions"));
         }
 
 
     }
 
     @DeleteMapping("/comment/{id}")
-    public ResponseEntity removeComment(@PathVariable("id")String id,@RequestBody String comment){
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(commentService.removeComment(id,comment));
-        }catch (BookNotFoundExceptions e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("book","BookNotFoundExceptions"));
+    public ResponseEntity removeComment(@PathVariable("id") String id, @RequestBody String comment) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(commentService.removeComment(id, comment));
+        } catch (BookNotFoundExceptions e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("book", "BookNotFoundExceptions"));
         }
     }
 }

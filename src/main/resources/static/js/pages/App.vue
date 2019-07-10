@@ -48,7 +48,7 @@
     import AuthorAddForm from 'components/AuthorAddForm.vue'
     import CommentList from 'components/CommentList.vue'
     import CommentForm from 'components/CommentForm.vue'
-    import {mapState, mapActions} from 'vuex'
+    import {mapActions, mapState} from 'vuex'
 
 
     export default {
@@ -83,11 +83,13 @@
         methods: {
             ...mapActions(['loadBooksAction', 'loadGenresAction','loadAuthorsAction','resetBookStatusAction','resetAuthorStatusAction']),
             showNav() {
+                if(this.addBookForm || this.addAuthorForm || this.showComment){
+                    this.drawerNav = false;
+                    this.clipped = false;
+                    return;
+                }
                 this.drawerNav = !this.drawerNav;
                 this.clipped = !this.drawerNav;
-            },
-            loadBooksByFilter(genres, date) {
-
             },
             showAuthorAddForm() {
                 this.book=null;

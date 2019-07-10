@@ -14,8 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+
 @NoArgsConstructor
-@EqualsAndHashCode(of={"id","username","comment"})
+@EqualsAndHashCode(of = {"id", "username", "comment"})
 @Data
 @Document
 public class Comment {

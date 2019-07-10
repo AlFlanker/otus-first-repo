@@ -127,7 +127,8 @@
 </template>
 
 <script>
-    import {mapState, mapGetters, mapActions} from 'vuex'
+    import {mapActions, mapGetters, mapState} from 'vuex'
+
     export default {
         props: ['genresNames', "drawerNav"],
         data() {
@@ -136,38 +137,62 @@
                 menu_begin: false,
                 menu_end: false,
                 selectedGenres: [],
-                selectedAuthors:[],
-                date_begin:null,
-                date_end:null,
-                valid: true
+                selectedAuthors: [],
+                date_begin: null,
+                date_end: null,
+                valid: true,
+                date_valid: true
             }
         },
         computed: {
-            ...mapState([ "authors", "authorsByNameAndlastname"]),
+            ...mapState(["authors", "authorsByNameAndlastname",'genres']),
             ...mapGetters(['getAuthors']),
+
         },
         watch: {
             drawerNav() {
                 this.clipped = !this.drawerNav;
             },
             menu_begin(val) {
-                val && setTimeout(() => (this.$refs.picker_begin.activePicker = 'YEAR'))
+                val && setTimeout(() => (this.$refs.picker_begin.activePicker = 'YEAR'));
             },
             menu_end(val) {
-                val && setTimeout(() => (this.$refs.picker_end.activePicker = 'YEAR'))
+                val && setTimeout(() => (this.$refs.picker_end.activePicker = 'YEAR'));
             }
 
         },
         methods: {
+            ...mapActions(['getBookByFilter']),
             save_begin: function (date) {
                 this.$refs.menu_1.save(date)
+
             },
             save_end: function (date) {
                 this.$refs.menu_2.save(date)
             },
+            getGenresId: function(name){
+                return this.genres.find(elem => elem.genreName === name).id;
+            },
+            getAuthorId: function(name){
+                return this.authors.find(elem => {
+                    let name_lastname = name.split(" ");
+                   return elem.name === name_lastname[0] && elem.lastname === name_lastname[1];
+                }).id;
+            },
             find: function () {
-                if(new Date(this.date_begin) < new Date(this.date_end)){
-                   console.log("test")
+                let end = new Date(this.date_end);
+                let start = new Date(this.date_begin);
+                let prm = {
+                    genres:this.selectedGenres.map(elem=>this.getGenresId(elem)),
+                    authors:this.selectedAuthors.map(elem=>this.getAuthorId(elem)),
+                    releaseDate_begin:this.date_begin,
+                    releaseDate_end:this.date_end
+                };
+                if (end !== null) {
+                    if (end.getTime() < start.getTime()) {
+                        this.date_end = null;
+                    }
+                    this.getBookByFilter(prm);
                 }
             },
             reset: function () {

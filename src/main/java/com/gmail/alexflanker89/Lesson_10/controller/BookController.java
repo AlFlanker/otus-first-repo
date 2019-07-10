@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +25,7 @@ public class BookController {
 
     @GetMapping("/book")
     public List<Book> getAllBook() {
+
         return bookService.getAll();
     }
 
@@ -34,7 +34,7 @@ public class BookController {
         return bookService.getBookById(id).orElseThrow(NotFoundException::new);
     }
 
-    @GetMapping("/book/params")
+    @PostMapping("/book/params")
     public List<Book> getByParams(@RequestBody RequestParams params) {
         return bookService.getByParams(params);
     }
@@ -51,7 +51,7 @@ public class BookController {
     }
 
     @PutMapping("/book/{id}")
-    public ResponseEntity update(@PathVariable("id")Book book,@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult) {
+    public ResponseEntity update(@PathVariable("id") Book book, @RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult) {
         Book updateBook;
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtil.getErrorsMap(bindingResult);

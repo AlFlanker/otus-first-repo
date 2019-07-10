@@ -9,19 +9,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class AuthosServiceImpl implements AuthorService {
     private final AuthorRepo authorRepo;
+
     @Override
     public List<Author> getAll() {
         return authorRepo.findAll();
     }
 
     private void ifExist(Author author) throws AuthorAlreadyExistExceptions {
-        if(authorRepo.findByNameAndLastnameAndDateOfBirth(author.getName(),author.getLastname(),author.getDateOfBirth()).size()>0){
+        if (authorRepo.findByNameAndLastnameAndDateOfBirth(author.getName(), author.getLastname(), author.getDateOfBirth()).size() > 0) {
             throw new AuthorAlreadyExistExceptions();
         }
     }

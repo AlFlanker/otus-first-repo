@@ -10,6 +10,7 @@ import com.gmail.alexflanker89.Lesson_10.dto.criteria.RequestParams;
 import com.gmail.alexflanker89.Lesson_10.repo.AuthorRepo;
 import com.gmail.alexflanker89.Lesson_10.repo.BookRepo;
 import com.gmail.alexflanker89.Lesson_10.repo.GenreRepo;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.junit.jupiter.api.Assertions;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -215,16 +214,7 @@ public class BookControllerTest {
                 .andReturn();
         bookRepo.delete(book);
     }
-    @Test
-    @DisplayName("Тест загрузки по жанрам")
-    public void loadByGenresTest() throws Exception{
-        List<String> genres = genreRepo.findAll().stream().map(Genre::getId).collect(Collectors.toList());
-        MvcResult mvcResult = mockMvc.perform(get("/book/genres").param("genres", genres.toArray(new String[0]))).andExpect(status().isOk()).andDo(print()).andReturn();
-        String content = mvcResult.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
-        List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
-        Assertions.assertTrue(books.size()>0);
-    }
+
 
     @Test
     @DisplayName("Тест загрузки по всем параметрам")
@@ -238,7 +228,7 @@ public class BookControllerTest {
         params.setReleaseDate_begin(LocalDate.of(2001,12,1));
         params.setReleaseDate_end(LocalDate.of(2101,12,1));
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult mvcResult = mockMvc.perform(get("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(post("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
         Assertions.assertTrue(books.size()>0);
@@ -254,7 +244,7 @@ public class BookControllerTest {
         params.setReleaseDate_begin(LocalDate.of(2001,12,1));
         params.setReleaseDate_end(LocalDate.of(2101,12,1));
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult mvcResult = mockMvc.perform(get("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(post("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
         Assertions.assertTrue(books.size()>0);
@@ -269,7 +259,7 @@ public class BookControllerTest {
         RequestParams params = new RequestParams();
         params.setGenres(new HashSet<String>(genres));
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult mvcResult = mockMvc.perform(get("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(post("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
         Assertions.assertTrue(books.size()>0);
@@ -283,7 +273,7 @@ public class BookControllerTest {
         RequestParams params = new RequestParams();
         params.setAuthors(authorsName);
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult mvcResult = mockMvc.perform(get("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(post("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
         Assertions.assertTrue(books.size()>0);
@@ -291,11 +281,12 @@ public class BookControllerTest {
     @Test
     @DisplayName("Попытка прокинуть null")
     public void loadByNullTest() throws Exception{
-        List<Author> authors = authorRepo.findAll();
-        Set<String> authorsName = authors.stream().map(Author::getId).collect(Collectors.toSet());
+
         RequestParams params = new RequestParams();
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult mvcResult = mockMvc.perform(get("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = mockMvc.perform(post("/book/params").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         List<Book> books = mapper.readValue(content,mapper.getTypeFactory().constructCollectionType(List.class,Book.class));
         Assertions.assertTrue(books.size()>0);
