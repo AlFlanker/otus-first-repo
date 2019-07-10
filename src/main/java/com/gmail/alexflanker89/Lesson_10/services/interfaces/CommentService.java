@@ -1,10 +1,14 @@
 package com.gmail.alexflanker89.Lesson_10.services.interfaces;
 
+import com.gmail.alexflanker89.Lesson_10.domain.Book;
 import com.gmail.alexflanker89.Lesson_10.domain.Comment;
+import com.gmail.alexflanker89.Lesson_10.dto.CommentDTO;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface CommentService {
-    void addComment(String book_id, Comment comment);
-    List<Comment> getAllCommentByBookId(String book_id);
+    Book addComment(String bookid, CommentDTO comment);
+    Book removeComment(String book,String comment);
+    List<Comment> getAllCommentByBookId(String bookid);
 }

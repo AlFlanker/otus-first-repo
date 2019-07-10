@@ -1,27 +1,40 @@
 <template>
     <v-container fluid grid-list-md>
     <v-layout row wrap>
-        <book-row v-for="book in books"
+        <book-row v-for="book in this.books"
         :key="book.id"
         :book="book"
-        :books="books" class="xs4" />
+        :edit="editBook"
+        :showComments="showCommentsFunc"
+                  class="(xs3|md4|sm6)" />
     </v-layout>
     </v-container>
 </template>
 
 <script>
     import BookRow from 'components/BookRow.vue'
-
+    import { mapState } from 'vuex'
     export default {
-        props: ['books'],
+        props:['editForm','showComments'],
         components: {
             BookRow
         },
         data() {
             return {
-                book: null
+
             }
         },
+        computed:{
+            ...mapState(['books', 'genres','genresNames'])
+        },
+        methods:{
+            editBook:function (book) {
+                this.editForm(book);
+            },
+            showCommentsFunc:function (book) {
+                this.showComments(book);
+            }
+        }
 
     }
 </script>

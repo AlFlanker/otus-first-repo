@@ -1,65 +1,37 @@
 <template>
     <v-app>
-        <v-navigation-drawer :clipped="clipped" v-model="drawerNav" enable-resize-watcher app dark class="primary lighten-3">
-            <v-list-tile>
-                <v-list-tile-action></v-list-tile-action>
-            </v-list-tile>
-
-            <v-list>
-                <v-list-tile>
-                    <v-list-tile-action>
-                        <v-select
-                                v-model="selectedGenres"
-                                :items="genresNames"
-                                :menu-props="{ maxHeight: '200' }"
-                                label="Выбор"
-                                multiple
-                                hint="Укажите жанры"
-                                persistent-hint
-                        ></v-select>
-                    </v-list-tile-action>
-                </v-list-tile>
-
-                <v-list-tile>
-                    <v-list-tile-action></v-list-tile-action>
-                </v-list-tile>
-
-                <v-list-tile>
-                    <v-list-tile-action>
-                        <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" :return-value.sync="date" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                            <template v-slot:activator="{ on }">
-                                <v-text-field
-                                        v-model="date"
-                                        label="Дата выхода"
-                                        prepend-icon="event"
-                                        readonly
-                                        v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                    v-model="date"
-                                    type="month"
-                                    no-title
-                                    scrollable
-                            >
-                                <v-spacer></v-spacer>
-                                <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-                                <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
-                            </v-date-picker>
-                        </v-menu>
-                    </v-list-tile-action>
-                </v-list-tile>
-            </v-list>
-        </v-navigation-drawer>
+        <navigation-drawer :genresNames="genresNames" :drawerNav="drawerNav" :authors="authors"></navigation-drawer>
         <v-toolbar fixed app :clipped-left="clipped">
-            <v-toolbar-side-icon @click.stop="drawerNav = !drawerNav"></v-toolbar-side-icon>
+            <v-toolbar-side-icon @click=showNav></v-toolbar-side-icon>
             <v-toolbar-title>Библиотека</v-toolbar-title>
             <v-spacer></v-spacer>
-
+            <v-btn icon>
+                <v-icon @click="showLibraryBooks" title="библиотека">library_books</v-icon>
+            </v-btn>
+            <v-btn icon>
+                <v-icon @click="showBookAddForm" title="Добавить новую книгу">library_add</v-icon>
+            </v-btn>
+            <v-btn icon>
+                <v-icon @click="showAuthorAddForm" title="Добавить нового автора">person_add</v-icon>
+            </v-btn>
         </v-toolbar>
+
         <v-content>
+            <v-container>
+                <div v-if="showComment">
+                    <comment-form :cur_book="book"></comment-form>
+                    <comment-list  :cur_book="book"/>
+                </div>
+
+            </v-container>
             <v-container fluid>
-                    <books-list :books="books"/>
+                <books-list v-if="showLibrary" :editForm="editBook" :showComments="showComments"/>
+                <v-layout  align-center justify-center row fill-height v-else-if="addAuthorForm">
+                    <author-add-form></author-add-form>
+                </v-layout>
+                <v-layout align-center justify-center row fill-height v-else-if="addBookForm">
+                    <book-add-form :book="book" :editCompl="editCompl"></book-add-form>
+                </v-layout>
             </v-container>
         </v-content>
         <v-footer class="pa-3">
@@ -71,45 +43,110 @@
 
 <script>
     import BooksList from 'components/BooksList.vue'
-    import booksApi from 'api/books'
-    import genresApi from 'api/genres'
+    import NavigationDrawer from 'components/NavigationDrawer.vue'
+    import BookAddForm from 'components/BookAddForm.vue'
+    import AuthorAddForm from 'components/AuthorAddForm.vue'
+    import CommentList from 'components/CommentList.vue'
+    import CommentForm from 'components/CommentForm.vue'
+    import {mapState, mapActions} from 'vuex'
+
 
     export default {
         components: {
-            BooksList
+             BooksList, NavigationDrawer, AuthorAddForm,BookAddForm,CommentList,CommentForm
         },
         data() {
             return {
                 date: new Date().toISOString().substr(0, 7),
                 menu: false,
                 modal: false,
-                books: null,
-                genres: null,
-                genresNames: [],
-                selectedGenres:[],
+                showComment:false,
+                selectedGenres: [],
                 drawerNav: false,
                 clipped: false,
-                e7: []
+                addAuthorForm: false,
+                addBookForm: false,
+                showLibrary:true,
+                e7: [],
+                book:null,
+                comments:null
             }
         },
-        created() {
-                booksApi.getAll()
-                    .then(result =>
-                        result.json().then(data => {
-                            console.log(data)
-                            this.books = data
-                        }))
-
-                genresApi.getAll()
-                    .then(result =>
-                        result.json().then(data => {
-                            console.log(data)
-                            this.genres = data
-                            this.genres.forEach(g => this.genresNames.push(g.genreName))
-                        }))
-
-
+        computed: {
+            ...mapState(['books', 'genres', 'genresNames','authors'])
         },
+        created() {
+            this.loadBooksAction();
+            this.loadGenresAction();
+            this.loadAuthorsAction();
+        },
+        methods: {
+            ...mapActions(['loadBooksAction', 'loadGenresAction','loadAuthorsAction','resetBookStatusAction','resetAuthorStatusAction']),
+            showNav() {
+                this.drawerNav = !this.drawerNav;
+                this.clipped = !this.drawerNav;
+            },
+            loadBooksByFilter(genres, date) {
+
+            },
+            showAuthorAddForm() {
+                this.book=null;
+                this.showComment= false;
+                this.addBookForm = false;
+                this.showLibrary = false;
+                this.addAuthorForm = true;
+            },
+            showBookAddForm() {
+                this.book=null;
+                this.showComment= false;
+                this.addBookForm = true;
+                this.showLibrary = false;
+                this.addAuthorForm = false;
+            },
+            showLibraryBooks(){
+                this.book=null;
+                this.showComment= false;
+                this.addBookForm = false;
+                this.showLibrary = true;
+                this.addAuthorForm = false;
+            },
+            editBook:function (book) {
+                this.book = book;
+                this.showComment= false;
+                this.addBookForm = true;
+                this.addAuthorForm = false;
+                this.showLibrary = false;
+            },
+            showComments:function(book){
+                this.book = book;
+                this.comments = book.comments;
+                this.showComment= true;
+                this.addBookForm = false;
+                this.addAuthorForm = false;
+                this.showLibrary = false;
+            },
+            editCompl:function () {
+                this.showBookAddForm();
+            }
+        },
+        mounted() {
+            this.$store.subscribe((mutation, state) => {
+                switch(mutation.type) {
+                    case 'updateBookArr':
+                        if(state.bookStatus === true){
+                            this.resetBookStatusAction();
+                            this.showLibraryBooks();
+                        }
+                        break;
+                    case 'updateAuthorsArr':
+                        if(state.authorStatus === true){
+                            this.resetAuthorStatusAction();
+                            this.showLibraryBooks();
+                        }
+                }
+            });
+        }
+
     }
 </script>
 

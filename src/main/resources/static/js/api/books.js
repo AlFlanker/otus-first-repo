@@ -1,10 +1,11 @@
 import Vue from 'vue'
 
-const books = Vue.resource('/books{/id}')
+const books = Vue.resource('/book{/id}')
 
 export default {
     add: book => books.save({}, book),
     update: book => books.update({id: book.id}, book),
     remove: id => books.remove({id}),
-    getAll: id=>books.get({id:id})
+    getAll: id=>books.get({id:id}),
+    getByParam:prm => books.get({},prm)
 }

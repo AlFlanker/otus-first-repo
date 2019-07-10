@@ -1,6 +1,11 @@
 package com.gmail.alexflanker89.Lesson_10.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -9,12 +14,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Data
-@EqualsAndHashCode(of = {"name","lastname","dateOfBirth"})
-@ToString(of = {"name","lastname","dateOfBirth"})
+@EqualsAndHashCode(of = {"name", "lastname", "dateOfBirth"})
+@ToString(of = {"name", "lastname", "dateOfBirth"})
 @NoArgsConstructor
 @Document
 @CompoundIndexes({
@@ -25,11 +31,16 @@ public class Author {
     private String id;
     private String name;
     private String lastname;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateOfBirth;
 
-    public Author(String  name, String  lastname, LocalDate dateOfBirth) {
+    public Author(String name, String lastname, LocalDate dateOfBirth) {
         this.name = name;
         this.lastname = lastname;
         this.dateOfBirth = dateOfBirth;
+
     }
 }

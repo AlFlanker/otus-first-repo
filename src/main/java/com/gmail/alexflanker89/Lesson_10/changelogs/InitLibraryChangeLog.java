@@ -12,13 +12,14 @@ import java.util.*;
 @ChangeLog(order = "001")
 public class InitLibraryChangeLog {
 
-    private Map<java.lang.String, Author> authorHashMap = new HashMap<>(5);
-    private Map<java.lang.String, Genre> genreMap = new HashMap<>(5);
+    private Map<String, Author> authorHashMap = new HashMap<>(5);
+    private Map<String, Genre> genreMap = new HashMap<>(5);
     private List<Comment> comments = new ArrayList<>();
 
 
-    private void initGenre() {
+    private void initGenre(MongoTemplate mongoTemplate) {
         Genre genre = new Genre();
+        Map<String, Genre> genreMap_tmp = new HashMap<>(5);
         genre.setGenreName("Роман");
         genreMap.put("Роман", genre);
         genre = new Genre();
@@ -33,6 +34,11 @@ public class InitLibraryChangeLog {
         genre = new Genre();
         genre.setGenreName("Фантастика");
         genreMap.put("Фантастика", genre);
+        genreMap.forEach((s, genre_) -> {
+            Genre save = mongoTemplate.save(genre_);
+            genreMap_tmp.put(s,save);
+        });
+        genreMap = genreMap_tmp;
     }
 
     private void initAuthor(MongoTemplate mongoTemplate) {
@@ -86,7 +92,7 @@ public class InitLibraryChangeLog {
     public void initBook(MongoTemplate mongoTemplate) {
         createComment();
         initAuthor(mongoTemplate);
-        initGenre();
+        initGenre(mongoTemplate);
         Book book = new Book();
         book.setTitle("Отель");
         book.setEdition("Книга на все времена");
@@ -125,8 +131,10 @@ public class InitLibraryChangeLog {
         book.setComments(comments);
         mongoTemplate.save(book);
 
-        genreMap.forEach((s, genre) -> mongoTemplate.save(genre));
+
 
     }
+
+
 
 }

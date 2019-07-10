@@ -20,15 +20,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @SuppressWarnings("unchecked")
 @AllArgsConstructor
 public class CascadeOperationListener extends AbstractMongoEventListener<Object> {
-    private final CommentRepo commentRepo;
-    private final GenreRepo genreRepo;
-    private final AuthorRepo authorRepo;
-    private final BookRepo bookRepo;
+
     private final MongoOperations mongoOperations;
 
     @Override
@@ -45,17 +43,18 @@ public class CascadeOperationListener extends AbstractMongoEventListener<Object>
     public void onBeforeDelete(BeforeDeleteEvent<Object> event) {
         super.onBeforeDelete(event);
         Document document = event.getDocument();
-        if (!document.get("_id").getClass().equals(Document.class)) {
-            ObjectId id = document.get("_id", ObjectId.get().getClass());
-            List<Book> deletedBooks = mongoOperations.find(Query.query(Criteria.where("_id").is(id)), Book.class);
+        final Object _id = document.get("_id");
+        if (Objects.nonNull(_id) && !_id.getClass().equals(Document.class)) {
+            ObjectId id = document.get("id", ObjectId.get().getClass());
+            List<Book> deletedBooks = mongoOperations.find(Query.query(Criteria.where("id").is(id)), Book.class);
             deletedBooks.forEach(book -> {
                 ReflectionUtils.doWithFields(event.getType(),
                         new CascadeDeleteCallback(book, mongoOperations));
             });
         } else {
-            List<ObjectId> list = (List) document.get("_id", Document.class).get("$in");
+            List<ObjectId> list = (List) document.get("id", Document.class).get("$in");
             Document obj = document.get("_id", Document.class);
-            List<Book> deletedBooks = mongoOperations.find(Query.query(Criteria.where("_id").in(list)), Book.class);
+            List<Book> deletedBooks = mongoOperations.find(Query.query(Criteria.where("id").in(list)), Book.class);
             deletedBooks.forEach(book -> {
                 ReflectionUtils.doWithFields(event.getType(),
                         new CascadeDeleteCallback(book, mongoOperations));

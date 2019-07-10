@@ -10,6 +10,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
     private Object source;
@@ -25,7 +26,7 @@ public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
         ReflectionUtils.makeAccessible(field);
         if(field.isAnnotationPresent(DBRef.class) && field.isAnnotationPresent(CascadeDelete.class)){
             final Object fieldValue = field.get(getSource());
-            if (fieldValue != null) {
+            if (Objects.nonNull(fieldValue)) {
                 final FieldCallback callback = new FieldCallback();
                 ReflectionUtils.doWithFields(fieldValue.getClass(), callback);
                 if(Iterable.class.isAssignableFrom(fieldValue.getClass())) {
@@ -38,7 +39,7 @@ public class CascadeDeleteCallback implements ReflectionUtils.FieldCallback {
                                 Field id1 = aClass.getDeclaredField("id");
                                 ReflectionUtils.makeAccessible(id1);
                                 Object id = id1.get(v);
-                                getMongoOperations().findAndRemove(Query.query(Criteria.where("_id").is(id)),aClass);
+                                getMongoOperations().findAndRemove(Query.query(Criteria.where("id").is(id)),aClass);
                                 System.out.println();
                             } catch (IllegalAccessException | NoSuchFieldException e) {
                                 e.printStackTrace();

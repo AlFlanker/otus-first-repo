@@ -2,30 +2,41 @@ package com.gmail.alexflanker89.Lesson_10.services;
 
 import com.gmail.alexflanker89.Lesson_10.domain.Book;
 import com.gmail.alexflanker89.Lesson_10.domain.Comment;
+import com.gmail.alexflanker89.Lesson_10.dto.CommentDTO;
+import com.gmail.alexflanker89.Lesson_10.exceptions.book.BookNotFoundExceptions;
 import com.gmail.alexflanker89.Lesson_10.repo.BookRepo;
+import com.gmail.alexflanker89.Lesson_10.services.interfaces.BookService;
 import com.gmail.alexflanker89.Lesson_10.services.interfaces.CommentService;
-import lombok.AllArgsConstructor;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
-   private final MongoOperations mongoOperations;
    private final BookRepo bookRepo;
-
+   private final BookService bookService;
 
     @Override
-    public void addComment(String book_id, Comment comment) {
-        Book book = mongoOperations.findOne(Query.query(Criteria.where("_id").is(book_id)), Book.class);
+    public Book addComment(String bookid, CommentDTO dto) {
+        Book book=bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
+        Comment comment = new Comment();
+        comment.setComment(dto.getComment());
+        comment.setCreated(LocalDateTime.now());
+        comment.setUsername(dto.getUsername());
         book.getComments().add(comment);
-        bookRepo.save(book);
+        return bookService.save(book);
+    }
+
+    @Override
+    public Book removeComment(String bookid, String comment) {
+        Book book=bookRepo.findById(bookid).orElseThrow(BookNotFoundExceptions::new);
+        book.getComments().stream().filter(c -> c.getId().equals(comment)).findFirst().ifPresent(c -> book.getComments().remove(c));
+        return bookService.save(book);
     }
 
     @Override

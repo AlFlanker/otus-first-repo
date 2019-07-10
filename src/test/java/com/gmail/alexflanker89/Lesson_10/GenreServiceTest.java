@@ -22,11 +22,11 @@ public class GenreServiceTest {
     public void getAllTest(){
         Assertions.assertTrue(genreService.getAll().size()>0);
     }
-
-    @Test
-    @DisplayName("Получить жанры по id книги")
-    public void getByBookTest(){
-        Book book = bookService.getAll().get(0);
-        Assertions.assertTrue(genreService.getAllGenreByBook(book.getId()).size()>0);
-    }
+//
+//    @Test
+//    @DisplayName("Получить жанры по id книги")
+//    public void getByBookTest(){
+//        Book book = bookService.getAll().get(0);
+//        Assertions.assertTrue(genreService.getAllGenreByBook(book.getId()).size()>0);
+//    }
 }

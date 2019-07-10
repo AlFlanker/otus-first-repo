@@ -4,15 +4,6 @@ spring:
       host: localhost
       port: 27017
       database: library
-security:
-  oauth2:
-    client:
-      clientId: 412878909841-gsfh85civf03sr7gaohtsoo63eheh60j.apps.googleusercontent.com
-      clientSecret: ${clientSecret}
-      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
-      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
-      clientAuthenticationScheme: form
-      scope: openid,email,profile
-    resource:
-        userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
-        preferTokenInfo: true
+
+  profiles:
+    active:dev

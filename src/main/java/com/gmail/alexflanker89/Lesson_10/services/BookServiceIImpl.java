@@ -2,38 +2,52 @@ package com.gmail.alexflanker89.Lesson_10.services;
 
 import com.gmail.alexflanker89.Lesson_10.domain.Author;
 import com.gmail.alexflanker89.Lesson_10.domain.Book;
+import com.gmail.alexflanker89.Lesson_10.domain.Genre;
+import com.gmail.alexflanker89.Lesson_10.dto.AuthorDTO;
+import com.gmail.alexflanker89.Lesson_10.dto.BookDTO;
+import com.gmail.alexflanker89.Lesson_10.dto.criteria.RequestParams;
+import com.gmail.alexflanker89.Lesson_10.exceptions.book.BookNotFoundExceptions;
 import com.gmail.alexflanker89.Lesson_10.repo.AuthorRepo;
 import com.gmail.alexflanker89.Lesson_10.repo.BookRepo;
+import com.gmail.alexflanker89.Lesson_10.repo.GenreRepo;
 import com.gmail.alexflanker89.Lesson_10.services.interfaces.BookService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookServiceIImpl implements BookService {
     private final BookRepo bookRepo;
+    private final GenreRepo genreRepo;
     private final AuthorRepo authorRepo;
     private final MongoOperations mongoOperations;
 
     @Override
     public List<Book> getAllByGenres(String line) {
         Set<String> genres;
-        if(line.contains(",")){
+        if (line.contains(",")) {
             genres = new HashSet<String>(Arrays.asList(line.split(",")));
             genres = genres.stream().map(String::trim).collect(Collectors.toSet());
-        }
-        else{
+        } else {
             genres = Collections.singleton(line);
         }
         Query byGenre = new Query();
         byGenre.addCriteria(Criteria.where("genres").elemMatch(Criteria.where("genreName").in(genres)));
+        return mongoOperations.find(byGenre, Book.class);
+    }
+
+    @Override
+    public List<Book> getAllByGenres(String[] genres) {
+        Query byGenre = new Query();
+        byGenre.addCriteria(Criteria.where("genres").elemMatch(Criteria.where("_id").in(genres)));
         return mongoOperations.find(byGenre, Book.class);
     }
 
@@ -67,16 +81,18 @@ public class BookServiceIImpl implements BookService {
     public void delete(Book entry) {
         bookRepo.delete(entry);
     }
-
+    //BookRepo отдавал сущность без id!!
     @Override
     public Book save(Book entry) {
-        return bookRepo.save(entry);
+        bookRepo.save(entry);
+        return bookRepo.findByTitleAndEditionAndReleaseDate(entry.getTitle(),entry.getEdition(),entry.getReleaseDate());
+
     }
 
     @Override
     public Book update(Book book) {
-        Book bookFromDb = mongoOperations.findOne(Query.query(Criteria.where("_id").is(book.getId())), Book.class);
-        if (bookFromDb != null) return bookRepo.save(book);
+        Book bookFromDb = mongoOperations.findOne(Query.query(Criteria.where("id").is(book.getId())), Book.class);
+        if (Objects.nonNull(bookFromDb)) return bookRepo.save(book);
         return null;
     }
 
@@ -93,7 +109,6 @@ public class BookServiceIImpl implements BookService {
 
     @Override
     public List<Book> getAllByAuthorsNameAndLastname(String name, String lastname) {
-        Query findAuthors = new Query();
         Query byAuthosNameAndLastname = new Query();
         byAuthosNameAndLastname.addCriteria(Criteria.where("authors").elemMatch(Criteria.where("name").is(name).and("lastname").is(lastname)));
         return mongoOperations.find(byAuthosNameAndLastname, Book.class);
@@ -102,11 +117,83 @@ public class BookServiceIImpl implements BookService {
 
     @Override
     public List<Author> getByBookId(String id) {
-        return mongoOperations.find(Query.query(Criteria.where("_id").is(id)), Book.class).stream().flatMap(book -> book.getAuthors().stream()).collect(Collectors.toList());
+        return mongoOperations.find(Query.query(Criteria.where("id").is(id)), Book.class).stream().flatMap(book -> book.getAuthors().stream()).collect(Collectors.toList());
     }
 
     @Override
     public Optional<Book> getBookById(String id) {
         return bookRepo.findById(id);
     }
+
+    @Override
+    public Optional<Book> getByTitle(String title) {
+        return bookRepo.findByTitle(title);
+    }
+
+    private List<Genre> getGenre(List<String> genres) {
+        return genreRepo.findByGenreNameIn(new HashSet<>(genres));
+    }
+
+    private List<Author> getAuthor(List<AuthorDTO> authors) {
+        return authorRepo.findByIdIn(authors.stream().map(AuthorDTO::getId).collect(Collectors.toSet()));
+    }
+
+    private Book convertFromDTO(BookDTO dto) {
+        Book book = new Book();
+        book.setId(dto.getId());
+        book.setTitle(dto.getTitle());
+        book.setEdition(dto.getEdition());
+        book.setReleaseDate(dto.getReleaseDate());
+        book.setDescription(dto.getDescription());
+        book.setAuthors(getAuthor(dto.getAuthors()));
+        book.setGenres(getGenre(dto.getGenres()));
+        return book;
+    }
+
+
+    @Override
+    public Book updateBook(Book book, BookDTO bookDTO) throws BookNotFoundExceptions {
+        Book fromDTO = this.convertFromDTO(bookDTO);
+        book.setAuthors(fromDTO.getAuthors());
+        book.setGenres(fromDTO.getGenres());
+        book.setTitle(fromDTO.getTitle());
+        book.setDescription(fromDTO.getDescription());
+        book.setEdition(fromDTO.getEdition());
+        book.setReleaseDate(fromDTO.getReleaseDate());
+        book.setUpdated(LocalDate.now());
+        return update(book);
+    }
+
+    @Override
+    public Book addBook(BookDTO bookDTO) {
+        Book fromDTO = this.convertFromDTO(bookDTO);
+        fromDTO.setCreated(LocalDate.now());
+        return save(fromDTO);
+    }
+
+    private Criteria getCriteria(RequestParams params){
+
+        Criteria criteria = new Criteria();
+        if(Objects.nonNull(params.getGenres())){
+            criteria = Criteria.where("genres").in(params.getGenres());
+        }
+        if(Objects.nonNull(params.getAuthors())){
+            criteria.and("authors").in(params.getAuthors());
+        }
+        if(Objects.nonNull(params.getReleaseDate_begin())){
+            Instant finstant=LocalDateTime.of(params.getReleaseDate_begin(),LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+            Instant finstant1=LocalDateTime.of(params.getReleaseDate_end(),LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC);
+            criteria.and("releaseDate").gte(finstant).lt(finstant1);
+        }
+
+        return criteria;
+    }
+    @Override
+    public List<Book> getByParams(RequestParams params) {
+        Query query = new Query();
+        query.addCriteria(getCriteria(params));
+        List<Book> books = mongoOperations.find(query, Book.class);
+        return books;
+    }
+
 }
