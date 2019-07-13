@@ -83,11 +83,11 @@ public class BookServiceIImpl implements BookService {
         bookRepo.delete(entry);
     }
 
-    //BookRepo отдавал сущность без id!!
+    //BookRepo отдавал сущность без id!! fix
     @Override
     public Book save(Book entry) {
-        bookRepo.save(entry);
-        return bookRepo.findByTitleAndEditionAndReleaseDate(entry.getTitle(), entry.getEdition(), entry.getReleaseDate());
+        entry.setId(null);
+        return  bookRepo.save(entry);
 
     }
 
@@ -231,8 +231,7 @@ public class BookServiceIImpl implements BookService {
             return mongoOperations.findAll(Book.class);
         }
         query.addCriteria(criteria);
-        List<Book> books = mongoOperations.find(query, Book.class);
-        return books;
+        return mongoOperations.find(query, Book.class);
     }
 
 }
