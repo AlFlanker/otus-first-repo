@@ -77,7 +77,7 @@
 </template>
 
 <script>
-    import {mapState, mapGetters, mapActions} from 'vuex'
+    import {mapActions, mapGetters, mapState} from 'vuex'
 
     export default {
         props:["book","editCompl"],
@@ -102,8 +102,8 @@
             }
         },
         computed: {
-            ...mapState(['genresNames', "authors", "authorsByNameAndlastname"]),
-            ...mapGetters(['getAuthors']),
+            ...mapState(['genresNames', "authors", "authorsByNameAndlastname",'genres']),
+            ...mapGetters(['getAuthors','getGenres']),
         },
         watch: {
             menu(val) {
@@ -122,20 +122,25 @@
         },
         methods: {
             async addBook() {
-                let res = [];
+                let sel_authors = [];
+                let sel_genres = [];
                 if (this.$refs.form.validate()) {
                     this.selected_authors.forEach(line => {
                         let author = this.getAuthors(line);
-                        res.push(author[0]);
+                        sel_authors.push(author[0]);
                     });
+
+                    this.selected_genres.forEach(genreName =>
+                        sel_genres.push(this.getGenres(genreName)[0]));
+                    console.log(sel_genres);
                     let new_book = {
-                        id:this.book?this.book.id:'',
+                        id:this.book?this.book.id:null,
                         title: this.title,
                         edition: this.edition,
                         description: this.description,
                         releaseDate: this.date,
-                        genres: this.selected_genres,
-                        authors: res
+                        genres: sel_genres,
+                        authors: sel_authors
 
                     };
                     if( (this.book)){

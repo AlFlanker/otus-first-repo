@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import booksApi from 'api/books'
-import genresApi from  'api/genres'
-import authorsApi from  'api/authors'
+import genresApi from 'api/genres'
+import authorsApi from 'api/authors'
 import commentsApi from 'api/comments'
 import filterApi from 'api/filter'
+
 Vue.use(Vuex);
 
 export default  new Vuex.Store({
@@ -43,19 +44,18 @@ export default  new Vuex.Store({
         updateBookArr(state,book){
             state.bookStatus = true;
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) state.books.splice(pos, 1,book);
+            if( pos> -1) state.books.splice(pos, 1,book);
             else state.books.push(book);
         },
         updateBooksComments(state,book){
-
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) {
+            if( pos> -1) {
                state.books[pos].comments=book.comments;
             }
         },
         deleteBooksComment(state,book){
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) {
+            if( pos> -1) {
                 state.books[pos].comments=book.comments;
             }
         },
@@ -72,6 +72,9 @@ export default  new Vuex.Store({
                     return (a.name === line.split(' ')[0]) && (a.lastname === line.split(' ')[1]);
                 }
             );
+        },
+        getGenres: state => name =>{
+            return state.genres.filter(g=>(g.genreName === name));
         }
     },
     actions:{
