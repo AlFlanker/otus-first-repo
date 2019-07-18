@@ -16,7 +16,7 @@ public class InitLibraryChangeLog {
     private Map<String, Genre> genreMap = new HashMap<>(5);
     private List<Comment> comments = new ArrayList<>();
 
-
+    //создаю отдельно т.к автоматом сохраняю их при сохранения книги
     private void initGenre(MongoTemplate mongoTemplate) {
         Genre genre = new Genre();
         Map<String, Genre> genreMap_tmp = new HashMap<>(5);
@@ -40,7 +40,7 @@ public class InitLibraryChangeLog {
         });
         genreMap = genreMap_tmp;
     }
-
+    //создаю отдельно т.к автоматом сохраняю их при сохранения книги
     private void initAuthor(MongoTemplate mongoTemplate) {
         Author author = new Author("Артур", "Хейли", LocalDate.of(1920, 4, 5));
         authorHashMap.put("Артур", author);
@@ -63,7 +63,7 @@ public class InitLibraryChangeLog {
         });
 
     }
-
+    //создаю отдельно т.к автоматом сохраняю их при сохранения книги
     private void createComment() {
         Comment comment = new Comment();
         comment.setUsername("Вася");

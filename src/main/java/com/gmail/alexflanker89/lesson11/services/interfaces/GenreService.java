@@ -6,5 +6,4 @@ import reactor.core.publisher.Flux;
 public interface GenreService {
     Flux<Genre> getAll();
 
-    Flux<Genre> getAllGenreByBook(String id);
 }

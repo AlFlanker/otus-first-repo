@@ -1,14 +1,9 @@
 package com.gmail.alexflanker89.lesson11.services;
 
-import com.gmail.alexflanker89.lesson11.domain.Author;
 import com.gmail.alexflanker89.lesson11.domain.Book;
-import com.gmail.alexflanker89.lesson11.domain.Genre;
-import com.gmail.alexflanker89.lesson11.dto.AuthorDTO;
 import com.gmail.alexflanker89.lesson11.dto.BookDTO;
 import com.gmail.alexflanker89.lesson11.dto.criteria.RequestParams;
-import com.gmail.alexflanker89.lesson11.repo.AuthorRepo;
 import com.gmail.alexflanker89.lesson11.repo.BookRepo;
-import com.gmail.alexflanker89.lesson11.repo.GenreRepo;
 import com.gmail.alexflanker89.lesson11.services.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,68 +15,22 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookServiceIImpl implements BookService {
     private final BookRepo bookRepo;
-    private final GenreRepo genreRepo;
-    private final AuthorRepo authorRepo;
     private final ReactiveMongoOperations mongoOperations;
 
-    @Override
-    public Flux<Book> getAllByGenres(String line) {
-        Set<String> genres;
-        if (line.contains(",")) {
-            genres = new HashSet<String>(Arrays.asList(line.split(",")));
-            genres = genres.stream().map(String::trim).collect(Collectors.toSet());
-        } else {
-            genres = Collections.singleton(line);
-        }
-        Query byGenre = new Query();
-        byGenre.addCriteria(Criteria.where("genres").elemMatch(Criteria.where("genreName").in(genres)));
-        return mongoOperations.find(byGenre, Book.class);
-    }
 
-    @Override
-    public Flux<Book> getAllByGenres(String[] genres) {
-        Query byGenre = new Query();
-        byGenre.addCriteria(Criteria.where("genres").elemMatch(Criteria.where("_id").in(genres)));
-        return mongoOperations.find(byGenre, Book.class);
-    }
-
-    @Override
-    public Flux<Book> getAllByAuthors(Set<Author> authors) {
-        return bookRepo.findByAuthorsIn(authors);
-    }
-
-    @Override
-    public Flux<Book> getAllByReleaseDateGreaterThan(LocalDate date) {
-        return bookRepo.findByReleaseDateGreaterThan(date);
-    }
-
-    @Override
-    public Flux<Book> getAllByReleaseDateLessThan(LocalDate date) {
-        return bookRepo.findByReleaseDateBefore(date);
-    }
-
-    @Override
-    public Flux<Book> getAllByReleaseDate(LocalDate date) {
-        return bookRepo.findByReleaseDate(date);
-    }
 
     @Override
     public Flux<Book> getAll() {
         return bookRepo.findAll();
     }
 
-    @Override
-    public void delete(Book entry) {
-        bookRepo.delete(entry);
-    }
 
     @Override
     public Mono<Book> save(Book entry) {
@@ -96,39 +45,10 @@ public class BookServiceIImpl implements BookService {
     }
 
     @Override
-    public Flux<Author> getByNameAndLastname(String name, String lastname) {
-        return authorRepo.findByNameAndLastname(name, lastname);
-    }
-
-    @Override
-    public Flux<Author> getAllAuthor() {
-        return authorRepo.findAll();
-    }
-
-    @Override
-    public Flux<Book> getAllByAuthorsNameAndLastname(String name, String lastname) {
-        Query byAuthosNameAndLastname = new Query();
-        byAuthosNameAndLastname.addCriteria(Criteria.where("authors").elemMatch(Criteria.where("name").is(name).and("lastname").is(lastname)));
-        return mongoOperations.find(byAuthosNameAndLastname, Book.class);
-    }
-
-    @Override
     public Mono<Book> getBookById(String id) {
         return bookRepo.findById(id);
     }
 
-    @Override
-    public Mono<Book> getByTitle(String title) {
-        return bookRepo.findByTitle(title);
-    }
-
-    private Flux<Genre> getGenre(List<String> genres) {
-        return genreRepo.findByGenreNameIn(new HashSet<>(genres));
-    }
-
-    private Flux<Author> getAuthor(List<AuthorDTO> authors) {
-        return authorRepo.findByIdIn(authors.stream().map(AuthorDTO::getId).collect(Collectors.toSet()));
-    }
 
     private Book convertFromDTO(BookDTO dto) {
         Book book = new Book();

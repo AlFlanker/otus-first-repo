@@ -8,9 +8,7 @@ import com.gmail.alexflanker89.lesson11.repo.CommentRepo;
 import com.gmail.alexflanker89.lesson11.services.interfaces.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -20,7 +18,6 @@ import java.time.LocalDateTime;
 @Service
 public class CommentServiceImpl implements CommentService {
     private final BookRepo bookRepo;
-    private final ReactiveMongoOperations operations;
     private final CommentRepo commentRepo;
 
 
@@ -39,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
                 book.map(b -> {
                     b.getComments().add(c);
                     return bookRepo.save(b);
-                })).flatMap(f -> f).flatMap(f1 -> f1);
+                })).flatMap(f -> f).flatMap(y -> y);
 
     }
 
@@ -53,10 +50,4 @@ public class CommentServiceImpl implements CommentService {
         ).flatMap(t->t).flatMap(y->y);
     }
 
-    @Override
-    public Flux<Comment> getAllCommentByBookId(String bookId) {
-        return bookRepo.findById(bookId).map(Book::getComments).flatMapMany(Flux::fromIterable);
-
-
-    }
 }

@@ -3,7 +3,6 @@ package com.gmail.alexflanker89.lesson11.handler;
 import com.gmail.alexflanker89.lesson11.domain.Book;
 import com.gmail.alexflanker89.lesson11.dto.BookDTO;
 import com.gmail.alexflanker89.lesson11.dto.criteria.RequestParams;
-import com.gmail.alexflanker89.lesson11.repo.BookRepo;
 import com.gmail.alexflanker89.lesson11.services.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BookHandler {
     private final BookService bookService;
-    private final BookRepo bookRepo;
 
     public Mono<ServerResponse> getAllBook(ServerRequest request) {
         return request.queryParam("id").map(id -> ServerResponse.ok().body(bookService.getBookById(id), Book.class))
@@ -35,7 +33,7 @@ public class BookHandler {
     public Mono<ServerResponse> update(ServerRequest request) {
         return ServerResponse.ok()
                 .body(bookService.updateBook(
-                        bookRepo.findById(request.pathVariable("id"))
+                        bookService.getBookById(request.pathVariable("id"))
                         ,request.bodyToMono(BookDTO.class))
                         ,Book.class);
 
