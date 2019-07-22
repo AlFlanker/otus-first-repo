@@ -10,7 +10,7 @@
         <v-card-actions>
             <v-card-text><i>Дата: </i> {{comment.created}}</v-card-text>
             <v-spacer></v-spacer>
-            <v-btn icon @click="del" title="Удалить комментарий" small>
+            <v-btn v-if="user && user.roles.includes('ADMIN')" icon @click="del" title="Удалить комментарий" small>
                 <v-icon>delete</v-icon>
             </v-btn>
         </v-card-actions>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+
     export default {
         props: ['comment','deleteComment'],
         methods: {
@@ -27,7 +29,9 @@
             del() {
                 this.deleteComment(this.comment);
             }
-        }
+        }, computed: {
+            ...mapState(['user']),
+        },
     }
 </script>
 

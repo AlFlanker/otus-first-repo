@@ -5,15 +5,58 @@
             <v-toolbar-side-icon @click=showNav></v-toolbar-side-icon>
             <v-toolbar-title>Библиотека</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon>
-                <v-icon @click="showLibraryBooks" title="библиотека">library_books</v-icon>
+
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+                <v-icon @click="showLibraryBooks" >library_books</v-icon>
             </v-btn>
-            <v-btn icon>
-                <v-icon @click="showBookAddForm" title="Добавить новую книгу">library_add</v-icon>
+                </template>
+                <span>библиотека</span>
+            </v-tooltip>
+
+            <v-tooltip v-if="user && user.roles.includes('ADMIN')" bottom>
+                <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+                <v-icon @click="showBookAddForm">library_add</v-icon>
             </v-btn>
-            <v-btn icon>
-                <v-icon @click="showAuthorAddForm" title="Добавить нового автора">person_add</v-icon>
+                </template>
+                <span>Добавить новую книгу</span>
+            </v-tooltip>
+
+            <v-tooltip v-if="user && user.roles.includes('ADMIN')" bottom>
+                <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+                <v-icon @click="showAuthorAddForm">person_add</v-icon>
             </v-btn>
+                </template>
+                <span>Добавить нового автора</span>
+            </v-tooltip>
+            <div>
+                {{user?user.username:''}}
+            </div>
+            <v-tooltip bottom v-if = "user">
+                <template v-slot:activator="{ on }">
+            <v-btn icon  v-on="on">
+                <span>
+                    <v-icon @click="logout">input</v-icon>
+                </span>
+            </v-btn>
+                </template>
+                <span>Выйти</span>
+            </v-tooltip>
+            <v-tooltip bottom v-else>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon  v-on="on">
+                <span>
+                    <v-icon @click="login">input</v-icon>
+                </span>
+                    </v-btn>
+                </template>
+                <span>Войти</span>
+            </v-tooltip>
+
+
         </v-toolbar>
 
         <v-content>
@@ -24,6 +67,13 @@
                 </div>
 
             </v-container>
+
+            <v-container fluid v-if="authForm">
+                <v-layout  align-center justify-center row fill-height>
+                    <login-form :registrate="regOrAuth"></login-form>
+                </v-layout>
+            </v-container>
+
             <v-container fluid>
                 <books-list v-if="showLibrary" :editForm="editBook" :showComments="showComments"/>
                 <v-layout  align-center justify-center row fill-height v-else-if="addAuthorForm">
@@ -48,12 +98,13 @@
     import AuthorAddForm from 'components/AuthorAddForm.vue'
     import CommentList from 'components/CommentList.vue'
     import CommentForm from 'components/CommentForm.vue'
+    import LoginForm from 'components/LoginForm.vue'
     import {mapActions, mapState} from 'vuex'
 
 
     export default {
         components: {
-             BooksList, NavigationDrawer, AuthorAddForm,BookAddForm,CommentList,CommentForm
+             BooksList, NavigationDrawer, AuthorAddForm,BookAddForm,CommentList,CommentForm, LoginForm
         },
         data() {
             return {
@@ -69,11 +120,13 @@
                 showLibrary:true,
                 e7: [],
                 book:null,
-                comments:null
+                comments:null,
+                authForm:false,
+                regOrAuth:false
             }
         },
         computed: {
-            ...mapState(['books', 'genres', 'genresNames','authors'])
+            ...mapState(['books', 'genres', 'genresNames','authors','user'])
         },
         created() {
             this.loadBooksAction();
@@ -83,7 +136,7 @@
         methods: {
             ...mapActions(['loadBooksAction', 'loadGenresAction','loadAuthorsAction','resetBookStatusAction','resetAuthorStatusAction']),
             showNav() {
-                if(this.addBookForm || this.addAuthorForm || this.showComment){
+                if(this.addBookForm || this.addAuthorForm || this.showComment || this.authForm){
                     this.drawerNav = false;
                     this.clipped = false;
                     return;
@@ -97,6 +150,7 @@
                 this.addBookForm = false;
                 this.showLibrary = false;
                 this.addAuthorForm = true;
+                this.authForm = false;
             },
             showBookAddForm() {
                 this.book=null;
@@ -104,6 +158,7 @@
                 this.addBookForm = true;
                 this.showLibrary = false;
                 this.addAuthorForm = false;
+                this.authForm = false;
             },
             showLibraryBooks(){
                 this.book=null;
@@ -111,6 +166,7 @@
                 this.addBookForm = false;
                 this.showLibrary = true;
                 this.addAuthorForm = false;
+                this.authForm = false;
             },
             editBook:function (book) {
                 this.book = book;
@@ -118,6 +174,7 @@
                 this.addBookForm = true;
                 this.addAuthorForm = false;
                 this.showLibrary = false;
+                this.authForm = false;
             },
             showComments:function(book){
                 this.book = book;
@@ -126,9 +183,20 @@
                 this.addBookForm = false;
                 this.addAuthorForm = false;
                 this.showLibrary = false;
+                this.authForm = false;
             },
             editCompl:function () {
                 this.showBookAddForm();
+            },
+            logout:function () {
+                this.$http.post("/logout").then(value => location.reload(true))
+            },
+            login:function () {
+                this.showComment= false;
+                this.addBookForm = false;
+                this.addAuthorForm = false;
+                this.showLibrary = false;
+                this.authForm = true;
             }
         },
         mounted() {

@@ -16,7 +16,8 @@ export default  new Vuex.Store({
         authors:null,
         authorsByNameAndlastname:[],
         bookStatus:null,
-        authorStatus:null
+        authorStatus:null,
+        user:frontendData
     },
     mutations:{
         loadBooksMutation (state,books){
@@ -44,19 +45,19 @@ export default  new Vuex.Store({
         updateBookArr(state,book){
             state.bookStatus = true;
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) state.books.splice(pos, 1,book);
+            if( pos>=0) state.books.splice(pos, 1,book);
             else state.books.push(book);
         },
         updateBooksComments(state,book){
-
+            console.log("yrd");
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) {
+            if( pos>=0) {
                state.books[pos].comments=book.comments;
             }
         },
         deleteBooksComment(state,book){
             let pos =state.books.findIndex(value =>value.id === book.id );
-            if( pos>0) {
+            if( pos>=0) {
                 state.books[pos].comments=book.comments;
             }
         },

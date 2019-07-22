@@ -52,7 +52,7 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex'
+    import {mapActions, mapState} from 'vuex'
 
     export default {
         props:['cur_book'],
@@ -68,7 +68,9 @@
                 },
             }
         },
-
+        computed: {
+            ...mapState(['user']),
+        },
         methods:{
             ...mapActions({addComment: 'addComment'}),
             add () {

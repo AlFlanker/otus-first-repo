@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import BookRow from 'components/BookRow.vue'
+    import BookRow from 'components/BookCard.vue'
     import {mapState} from 'vuex'
 
     export default {
