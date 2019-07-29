@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(of = {"id", "title", "edition", "description", "releaseDate_begin", "genres", "authors"})
+@EqualsAndHashCode(of = {"id", "title", "edition", "description", "releaseDate", "genres", "authors"})
 @RequiredArgsConstructor
 public class BookDTO {
     private String id;

@@ -24,7 +24,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @ToString(of = {"id", "title", "edition", "description"})
-@EqualsAndHashCode(of = {"title", "edition", "description", "releaseDate_begin"})
+@EqualsAndHashCode(of = {"title", "edition", "description", "releaseDate"})
 @Document
 public class Book {
     @Id
