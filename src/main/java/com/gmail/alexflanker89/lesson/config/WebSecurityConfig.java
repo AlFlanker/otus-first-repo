@@ -1,9 +1,9 @@
 package com.gmail.alexflanker89.lesson.config;
 
 
-import com.gmail.alexflanker89.lesson.domain.auth.Role;
 import com.gmail.alexflanker89.lesson.services.UserServiceDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -33,6 +32,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/actuator/**").permitAll()
+                .and()
+                .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/authors", "/book", "/books**", "/genres", "/js/**", "/error**").permitAll()
                 .and()
                 .authorizeRequests()
@@ -50,12 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .disable().formLogin().successHandler(
-                (httpServletRequest, httpServletResponse, authentication) -> httpServletResponse.setStatus(200))
-                .and()
-                .anonymous().principal(User.builder()
-                .username("anonymous")
-                .password("anon")
-                .roles(Role.ANONYMOUS.getAuthority()));
+                (httpServletRequest, httpServletResponse, authentication) -> httpServletResponse.setStatus(200));
 
 
     }

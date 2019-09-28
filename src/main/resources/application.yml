@@ -1,25 +1,16 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "logfile,metrics,health"
+  endpoint:
+    health:
+      show-details: always
 spring:
-  batch:
-    job:
-      enabled: false
   data:
     mongodb:
       host: localhost
       port: 27017
       database: library
-
-  datasource:
-      url: jdbc:h2:mem:testdb
-      driverClassName: org.h2.Driver
-      username: sa
-      password:
-
-  h2:
-    console:
-      enabled: true
-      settings:
-          trace: false
-          web-allow-others: false
-  profiles:
-    active:dev
-
+logging:
+  file: "log/test.log"
