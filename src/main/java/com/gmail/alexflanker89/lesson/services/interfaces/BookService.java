@@ -48,4 +48,6 @@ public interface BookService{
     Book save(Book entry);
 
     Book update(Book entry);
+
+    long count();
 }

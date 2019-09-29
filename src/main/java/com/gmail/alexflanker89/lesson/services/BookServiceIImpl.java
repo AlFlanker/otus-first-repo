@@ -234,4 +234,8 @@ public class BookServiceIImpl implements BookService {
         return mongoOperations.find(query, Book.class);
     }
 
+    @Override
+    public long count() {
+        return bookRepo.count();
+    }
 }

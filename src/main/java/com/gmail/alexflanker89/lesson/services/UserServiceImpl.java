@@ -31,4 +31,9 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(user);
 
     }
+
+    @Override
+    public Long count() {
+        return userRepo.count();
+    }
 }

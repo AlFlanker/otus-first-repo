@@ -35,4 +35,9 @@ public class AuthosServiceImpl implements AuthorService {
         ifExist(author);
         return authorRepo.save(author);
     }
+
+    @Override
+    public Long count() {
+        return authorRepo.count();
+    }
 }

@@ -9,4 +9,6 @@ public interface AuthorService {
     List<Author> getAll();
 
     Author save(AuthorDTO authorDTO);
+
+    Long count();
 }
