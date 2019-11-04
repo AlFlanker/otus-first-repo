@@ -55,7 +55,7 @@
     import {mapActions, mapState} from 'vuex'
 
     export default {
-        props:['cur_book'],
+
         data() {
             return {
                 form:false,
@@ -75,12 +75,12 @@
             ...mapActions({addComment: 'addComment'}),
             add () {
                 if (this.$refs.form.validate()) {
-
                     const dto ={
                         username:this.username,
                         comment:this.text
                     };
-                    this.addComment({book:this.cur_book.id,dto:dto});
+                    const id = this.$route.params.id;
+                    this.addComment({book:id,dto:dto});
                 }
             },
 

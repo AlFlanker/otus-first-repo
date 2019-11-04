@@ -29,7 +29,7 @@ public class BookController {
         return bookService.getAll();
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/book/{id}")
     public Book getBook(@PathVariable("id") String id) {
         return bookService.getBookById(id).orElseThrow(NotFoundException::new);
     }

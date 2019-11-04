@@ -59,31 +59,39 @@
 
         </v-toolbar>
 
-        <v-content>
-            <v-container>
-                <div v-if="showComment">
-                    <comment-form :cur_book="book"></comment-form>
-                    <comment-list  :cur_book="book"/>
-                </div>
-
-            </v-container>
-
-            <v-container fluid v-if="authForm">
-                <v-layout  align-center justify-center row fill-height>
-                    <login-form :registrate="regOrAuth"></login-form>
+        <v-container>
+            <div >
+            <v-layout fluid>
+                <v-layout align-center justify-center row fill-height >
+            <router-view></router-view>
                 </v-layout>
-            </v-container>
+            </v-layout>
+            </div>
+        </v-container>
+<!--            <v-container>-->
+<!--                <div v-if="showComment">-->
+<!--                    <comment-form :cur_book="book"></comment-form>-->
+<!--                    <comment-list  :cur_book="book"/>-->
+<!--                </div>-->
 
-            <v-container fluid>
-                <books-list v-if="showLibrary" :editForm="editBook" :showComments="showComments"/>
-                <v-layout  align-center justify-center row fill-height v-else-if="addAuthorForm">
-                    <author-add-form></author-add-form>
-                </v-layout>
-                <v-layout align-center justify-center row fill-height v-else-if="addBookForm">
-                    <book-add-form :book="book" :editCompl="editCompl"></book-add-form>
-                </v-layout>
-            </v-container>
-        </v-content>
+<!--            </v-container>-->
+
+<!--            <v-container fluid v-if="authForm">-->
+<!--                <v-layout  align-center justify-center row fill-height>-->
+<!--                    <login-form :registrate="regOrAuth"></login-form>-->
+<!--                </v-layout>-->
+<!--            </v-container>-->
+
+<!--            <v-container fluid>-->
+<!--                <books-list v-if="showLibrary" :editForm="editBook" :showComments="showComments"/>-->
+<!--                <v-layout  align-center justify-center row fill-height v-else-if="addAuthorForm">-->
+<!--                    <author-add-form></author-add-form>-->
+<!--                </v-layout>-->
+<!--                <v-layout align-center justify-center row fill-height v-else-if="addBookForm">-->
+<!--                    <book-add-form :book="book" :editCompl="editCompl"></book-add-form>-->
+<!--                </v-layout>-->
+<!--            </v-container>-->
+
         <v-footer class="pa-3">
             <v-spacer></v-spacer>
             <div>&copy; {{ new Date().getFullYear() }}</div>
@@ -92,19 +100,17 @@
 </template>
 
 <script>
-    import BooksList from 'components/BooksList.vue'
     import NavigationDrawer from 'components/NavigationDrawer.vue'
-    import BookAddForm from 'components/BookAddForm.vue'
-    import AuthorAddForm from 'components/AuthorAddForm.vue'
-    import CommentList from 'components/CommentList.vue'
-    import CommentForm from 'components/CommentForm.vue'
-    import LoginForm from 'components/LoginForm.vue'
+    // import BookAddForm from 'components/BookAddForm.vue'
+    // import AuthorAddForm from 'components/AuthorAddForm.vue'
+    // import CommentList from 'components/CommentList.vue'
+    // import CommentForm from 'components/CommentForm.vue'
     import {mapActions, mapState} from 'vuex'
 
 
     export default {
         components: {
-             BooksList, NavigationDrawer, AuthorAddForm,BookAddForm,CommentList,CommentForm, LoginForm
+              NavigationDrawer
         },
         data() {
             return {
@@ -145,28 +151,13 @@
                 this.clipped = !this.drawerNav;
             },
             showAuthorAddForm() {
-                this.book=null;
-                this.showComment= false;
-                this.addBookForm = false;
-                this.showLibrary = false;
-                this.addAuthorForm = true;
-                this.authForm = false;
+                this.$router.push('/library/add-author-form');
             },
             showBookAddForm() {
-                this.book=null;
-                this.showComment= false;
-                this.addBookForm = true;
-                this.showLibrary = false;
-                this.addAuthorForm = false;
-                this.authForm = false;
+                this.$router.push('/library/add-book-form');
             },
             showLibraryBooks(){
-                this.book=null;
-                this.showComment= false;
-                this.addBookForm = false;
-                this.showLibrary = true;
-                this.addAuthorForm = false;
-                this.authForm = false;
+                this.$router.push("/");
             },
             editBook:function (book) {
                 this.book = book;
@@ -192,11 +183,7 @@
                 this.$http.post("/logout").then(value => location.reload(true))
             },
             login:function () {
-                this.showComment= false;
-                this.addBookForm = false;
-                this.addAuthorForm = false;
-                this.showLibrary = false;
-                this.authForm = true;
+                this.$router.push('/library/login');
             }
         },
         mounted() {

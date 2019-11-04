@@ -4,8 +4,6 @@
         <book-row v-for="book in this.books"
         :key="book.id"
         :book="book"
-        :edit="editBook"
-        :showComments="showCommentsFunc"
                   class="xs3 md4 sm6" />
     </v-layout>
     </v-container>
@@ -16,7 +14,6 @@
     import {mapState} from 'vuex'
 
     export default {
-        props:['editForm','showComments'],
         components: {
             BookRow
         },
@@ -26,15 +23,9 @@
             }
         },
         computed:{
-            ...mapState(['books', 'genres','genresNames'])
+            ...mapState(['books'])
         },
         methods:{
-            editBook:function (book) {
-                this.editForm(book);
-            },
-            showCommentsFunc:function (book) {
-                this.showComments(book);
-            }
         }
 
     }

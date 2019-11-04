@@ -50,8 +50,7 @@
                 this.edit(this.book);
             },
             showCommentsFunc:function () {
-
-;                this.showComments(this.book);
+                this.$router.push(`/library/comments/${this.book.id}`);
             }
         },
         data: () => ({

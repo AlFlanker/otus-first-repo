@@ -10,6 +10,7 @@ Vue.use(Vuex);
 
 export default  new Vuex.Store({
     state:{
+        book: null,
         books: null,
         genres: null,
         genresNames: [],
@@ -20,6 +21,12 @@ export default  new Vuex.Store({
         user:frontendData
     },
     mutations:{
+        loadBookMutation(state, books) {
+            state.book = books;
+            let pos = state.books.findIndex(elem => elem.id === state.book.id);
+            if (pos > -1) state.books.splice(pos,1,state.book);
+            else state.books.push(state.book);
+        },
         loadBooksMutation (state,books){
             state.books = books;
         },
@@ -49,7 +56,6 @@ export default  new Vuex.Store({
             else state.books.push(book);
         },
         updateBooksComments(state,book){
-            console.log("yrd");
             let pos =state.books.findIndex(value =>value.id === book.id );
             if( pos>=0) {
                state.books[pos].comments=book.comments;
@@ -74,9 +80,14 @@ export default  new Vuex.Store({
                     return (a.name === line.split(' ')[0]) && (a.lastname === line.split(' ')[1]);
                 }
             );
-        }
+        },
     },
     actions:{
+        async loadBookByIdAction({commit}, amount) {
+            const result = await booksApi.getAll(amount.amount);
+            const book = await result.json();
+            commit('loadBookMutation', book);
+        },
         async loadBooksAction({commit}) {
             const result = await booksApi.getAll();
             const data = await result.json();
@@ -120,7 +131,6 @@ export default  new Vuex.Store({
             }
         },
         async addComment({commit},data){
-
             const result = await commentsApi.add(data.book,data.dto);
             if(result.status === 201){
                 const save = await result.json();

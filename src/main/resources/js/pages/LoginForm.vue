@@ -1,7 +1,7 @@
 <template>
-    <v-card style="width:30%;" class="	justify-content:center;">
+    <v-card style="width:30%; margin-top: 2em" class="	justify-content:center;">
         <v-card-title style="padding-top: 2em; padding-left: 2em">
-            <div class="title font-weight-light">{{this.registrate?'Форма регистрации:':'Авторизация:'}}</div>
+            <div class="title font-weight-light">{{this.checkReg?'Форма регистрации:':'Авторизация:'}}</div>
         </v-card-title>
         <v-form
                 ref="form"
@@ -58,14 +58,22 @@
 
 <script>
 
+    import {mapState} from "vuex";
+
     export default {
-        props:["registrate"],
+                computed: {
+            ...mapState(['user']),
+            checkReg: function () {
+                this.registrate = !!this.user;
+            }
+        },
         data() {
             return {
                 valid: false,
                 password:'',
                 username:'',
                 repeat_password:'',
+                registrate: false,
 
                 nameRules: [
                     v => !!v || 'Имя пользователя не может быть пустым',
@@ -101,6 +109,7 @@
                                 'Content-Type': 'multipart/form-data'
                             }}).then(value => {
                                 if(value.status === 200) {
+                                    this.$router.push('/');
                                     location.reload(true);
                                 } else if(value.status === 401){
                                     this.$refs.form.reset();
