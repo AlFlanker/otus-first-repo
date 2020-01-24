@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+  datasource:
+    platform: postgresql
+    url: jdbc:postgresql://localhost:5432/test2
+    username: test_user
+    password: pass
+    driverClassName: org.postgresql.Driver
+    initialization-mode: always
