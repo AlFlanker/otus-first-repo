@@ -1,0 +1,16 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "logfile,metrics,health,library"
+  endpoint:
+    health:
+      show-details: always
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: library
+logging:
+  file: "log/test.log"
