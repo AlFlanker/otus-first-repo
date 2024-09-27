@@ -1,0 +1,5 @@
+spring:
+    profiles: prod
+name: prod-YAML
+environment: production
+url: src/main/resources/lesson/question.csv
